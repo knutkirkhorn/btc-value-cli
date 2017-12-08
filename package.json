@@ -1,0 +1,31 @@
+{
+  "name": "btc-value-cli",
+  "version": "1.0.0",
+  "description": "Get the current Bitcoin value CLI",
+  "bin": {
+    "btc-value": "cli.js"
+  },
+  "files": [
+    "cli.js"
+  ],
+  "engines": {
+    "node": ">=4"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bitcoin",
+    "btc",
+    "value",
+    "cryptocurrency",
+    "cli"
+  ],
+  "author": "Knut Kirkhorn",
+  "license": "MIT",
+  "dependencies": {
+    "btc-value": "^1.1.0",
+    "meow": "^4.0.0"
+  }
+}
