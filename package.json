@@ -7,7 +7,8 @@
     "url": "https://github.com/Knutakir/btc-value-cli"
   },
   "bin": {
-    "btc-value": "cli.js"
+    "btc-value": "cli.js",
+    "btc-value-cli": "cli.js"
   },
   "files": [
     "cli.js"
