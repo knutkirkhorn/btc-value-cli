@@ -27,11 +27,11 @@ const cli = meow(`
 if (cli.flags.d === undefined) {
     btcValue(true)
         .then((value) => {
-            console.log(value);
+            console.log('$' + value);
         });
 } else {
     btcValue()
         .then((value) => {
-            console.log(value);
+            console.log('$' + value);
         });
 }
