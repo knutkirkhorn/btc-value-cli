@@ -2,6 +2,10 @@
   "name": "btc-value-cli",
   "version": "1.0.0",
   "description": "Get the current Bitcoin value CLI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Knutakir/btc-value-cli"
+  },
   "bin": {
     "btc-value": "cli.js"
   },
