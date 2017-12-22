@@ -82,6 +82,8 @@ if (cli.flags.l) {
 // If c flag is set => set currency as default
 if (cli.flags.s !== undefined) {
     defaultCurrency = isValidCurrencyCode(cli.flags.s);
+    console.log(defaultCurrency.code);
+    console.log(defaultCurrency.symbol);
 
     const newConfig = JSON.stringify(
         {
@@ -107,26 +109,22 @@ if (cli.flags.c) {
     const currency = isValidCurrencyCode(cli.flags.c);
 
     if (currency.code === 'USD') {
-        btcValue(cli.flags.d)
-            .then((value) => {
-                console.log(currency.symbol + value);
-            });
+        btcValue(cli.flags.d).then((value) => {
+            console.log(currency.symbol + value);
+        });
     } else {
-        btcValue.getConvertedValue(currency.code, cli.flags.d)
-            .then((value) => {
-                console.log(currency.symbol + value);
-            });
+        btcValue.getConvertedValue(currency.code, cli.flags.d).then((value) => {
+            console.log(currency.symbol + value);
+        });
     }
 } else {
     if (defaultCurrency.code === 'USD') {
-        btcValue(cli.flags.d)
-            .then((value) => {
-                console.log(defaultCurrency.symbol + value);
-            });
+        btcValue(cli.flags.d).then((value) => {
+            console.log(defaultCurrency.symbol + value);
+        });
     } else {
-        btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d)
-            .then((value) => {
-                console.log(defaultCurrency.symbol + value);
-            });
+        btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d).then((value) => {
+            console.log(defaultCurrency.symbol + value);
+        });
     }
 }
