@@ -25,8 +25,8 @@ const cli = meow(`
         $ btc-value -s NOK
             Default currency set as: NOK (kr)
             kr158053
-        $ btc-value -c
-            kr131360
+        $ btc-value -c NOK
+            kr129640
 `, {
     flags: {
         double: {
@@ -48,6 +48,25 @@ const cli = meow(`
     }
 });
 
+// Search currency list if input currency code matches any 
+function isValidCurrencyCode(currencyCode) {
+    currencyCode = currencyCode.toUpperCase();
+    let currency;
+    for (let i = 0; i < btcValue.currencies.length; i++) {
+        if (currencyCode === btcValue.currencies[i].code) {
+            currency = btcValue.currencies[i];
+            break;
+        }
+    }
+
+    if (!currency) {
+        console.log('Please choose a valid currency code');
+        console.log('Type `btc-value -l` for a list of valid currencies');
+        process.exit(0);
+    }
+    return currency;
+}
+
 // If l flag is set => print list of currency codes
 if (cli.flags.l) {
     console.log(`
@@ -62,29 +81,13 @@ if (cli.flags.l) {
 
 // If c flag is set => set currency as default
 if (cli.flags.s !== undefined) {
-    // Search currency list if the flag matches
-    let found = false;
-    let symbol;
-    for (let i = 0; i < btcValue.currencies.length; i++) {
-        if (cli.flags.s.toUpperCase() === btcValue.currencies[i].code) {
-            found = true;
-            symbol = btcValue.currencies[i].symbol;
-            defaultCurrency = btcValue.currencies[i];
-            break;
-        }
-    }
-
-    if (!found) {
-        console.log('Please choose a valid currency code');
-        console.log('Type `btc-value -l` for a list of valid currencies');
-        process.exit(0);
-    }
+    defaultCurrency = isValidCurrencyCode(cli.flags.s);
 
     const newConfig = JSON.stringify(
         {
             "default": {
-                "code": cli.flags.s,
-                "symbol": symbol
+                "code": defaultCurrency.code,
+                "symbol": defaultCurrency.symbol
             }
         }, null, 4);
 
@@ -101,32 +104,17 @@ if (cli.flags.s !== undefined) {
 // USD is the default currency in the API
 // If c flag is set => convert to other currency
 if (cli.flags.c) {
-    // Search currency list if the flag matches
-    let found = false;
-    let symbol;
-    let code = cli.flags.c.toUpperCase();
-    for (let i = 0; i < btcValue.currencies.length; i++) {
-        if (code === btcValue.currencies[i].code) {
-            found = true;
-            symbol = btcValue.currencies[i].symbol;
-            break;
-        }
-    }
-    if (!found) {
-        console.log('Please choose a valid currency code');
-        console.log('Type `btc-value -l` for a list of valid currencies');
-        process.exit(0);
-    }
+    const currency = isValidCurrencyCode(cli.flags.c);
 
-    if (code === 'USD') {
+    if (currency.code === 'USD') {
         btcValue(cli.flags.d)
             .then((value) => {
-                console.log(symbol + value);
+                console.log(currency.symbol + value);
             });
     } else {
-        btcValue.getConvertedValue(cli.flags.c, cli.flags.d)
+        btcValue.getConvertedValue(currency.code, cli.flags.d)
             .then((value) => {
-                console.log(symbol + value);
+                console.log(currency.symbol + value);
             });
     }
 } else {
