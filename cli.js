@@ -118,6 +118,7 @@ if (cli.flags.c) {
         });
     }
 } else {
+    console.log(defaultCurrency);
     if (defaultCurrency.code === 'USD') {
         btcValue(cli.flags.d).then((value) => {
             console.log(defaultCurrency.symbol + value);
