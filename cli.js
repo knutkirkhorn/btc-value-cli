@@ -3,8 +3,8 @@
 const btcValue = require('btc-value');
 const meow = require('meow');
 const fs = require('fs');
-const configFile = './config.json';
-const config = require(configFile);
+const configFile = 'config.json';
+const config = require('./' + configFile);
 let defaultCurrency = config.default;
 
 const cli = meow(`
@@ -82,8 +82,6 @@ if (cli.flags.l) {
 // If c flag is set => set currency as default
 if (cli.flags.s !== undefined) {
     defaultCurrency = isValidCurrencyCode(cli.flags.s);
-    console.log(defaultCurrency.code);
-    console.log(defaultCurrency.symbol);
 
     const newConfig = JSON.stringify(
         {
@@ -96,36 +94,42 @@ if (cli.flags.s !== undefined) {
     fs.writeFile(configFile, newConfig, function(error) {
         if (error) {
             console.log('Something wrong happened, could not save new default currency.');
+            process.exit(0);
+        } else {
+            console.log('Default currency set to: ' + defaultCurrency.code + ' (' + defaultCurrency.symbol + ')');
+            checkForMoreFlags();
+            
         }
     });
-    
-    console.log('Default currency set to: ' + defaultCurrency.code + ' (' + defaultCurrency.symbol + ')');
+} else {
+    checkForMoreFlags();
 }
 
 // If d flag is set => return value as double
 // USD is the default currency in the API
 // If c flag is set => convert to other currency
-if (cli.flags.c) {
-    const currency = isValidCurrencyCode(cli.flags.c);
-
-    if (currency.code === 'USD') {
-        btcValue(cli.flags.d).then((value) => {
-            console.log(currency.symbol + value);
-        });
+function checkForMoreFlags() {
+    if (cli.flags.c) {
+        const currency = isValidCurrencyCode(cli.flags.c);
+    
+        if (currency.code === 'USD') {
+            btcValue(cli.flags.d).then((value) => {
+                console.log(currency.symbol + value);
+            });
+        } else {
+            btcValue.getConvertedValue(currency.code, cli.flags.d).then((value) => {
+                console.log(currency.symbol + value);
+            });
+        }
     } else {
-        btcValue.getConvertedValue(currency.code, cli.flags.d).then((value) => {
-            console.log(currency.symbol + value);
-        });
-    }
-} else {
-    console.log(defaultCurrency);
-    if (defaultCurrency.code === 'USD') {
-        btcValue(cli.flags.d).then((value) => {
-            console.log(defaultCurrency.symbol + value);
-        });
-    } else {
-        btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d).then((value) => {
-            console.log(defaultCurrency.symbol + value);
-        });
+        if (defaultCurrency.code === 'USD') {
+            btcValue(cli.flags.d).then((value) => {
+                console.log(defaultCurrency.symbol + value);
+            });
+        } else {
+            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d).then((value) => {
+                console.log(defaultCurrency.symbol + value);
+            });
+        }
     }
 }
