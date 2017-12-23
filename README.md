@@ -51,6 +51,12 @@ KRW, MXN, MYR, NOK, NZD, USD, PHP, PKR,
 PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
 ```
 
+### `--quantity`, `-q [number]`
+Print the value of the given quantity. Input quantity can be either ```double``` or ```integer```.
+
+### `--myquantity`, `-m [number]`
+Set my quantity if [number] is a number. Otherwise print the value of the locally stored `my_quantity` in the [config.json](config.json) file.
+
 ## Related
 - [btc-value](https://github.com/Knutakir/btc-value) - API for this module
 
