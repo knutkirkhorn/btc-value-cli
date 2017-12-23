@@ -3,8 +3,8 @@
 const btcValue = require('btc-value');
 const meow = require('meow');
 const fs = require('fs');
-const configFile = 'config.json';
-const config = require('./' + configFile);
+const configFile = __dirname + '/config.json';
+const config = require(configFile);
 let defaultCurrency = config.default;
 
 const cli = meow(`
