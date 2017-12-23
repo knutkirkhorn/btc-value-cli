@@ -18,6 +18,7 @@ const cli = meow(`
           --currency -c [code]      Print the value in another currency         
           --list -l                 Print a list of all available currencies
           --quantity -q [number]    Print the value of the given quantity
+          --myquantity -m [number]  Set my quantity, or print it if [number] is nothing
 
         Examples
         $ btc-value
@@ -51,6 +52,10 @@ const cli = meow(`
         quantity: {
             type: 'double',
             alias: 'q'
+        },
+        myquantity: {
+            type: 'double',
+            alias: 'm'
         }
     }
 });
@@ -96,7 +101,7 @@ if (cli.flags.s !== undefined) {
                 "code": defaultCurrency.code,
                 "symbol": defaultCurrency.symbol
             },
-            "quantity": myQuantity
+            "my_quantity": myQuantity
         }, null, 4);
 
     fs.writeFile(configFile, newConfig, function(error) {
@@ -108,13 +113,54 @@ if (cli.flags.s !== undefined) {
             checkForMoreFlags();
         }
     });
+}
+
+if (cli.flags.m) {
+    if (cli.flags.q) {
+        console.log('Can not write both m and q flag');
+        console.log('Type `btc-value --help` to see how to use the flags');
+        process.exit(0);
+    }
+
+    if (typeof cli.flags.m === 'number') {
+        // Set new value of myQuantity
+        myQuantity = cli.flags.m;
+        const newConfig = JSON.stringify(
+            {
+                "default": {
+                    "code": defaultCurrency.code,
+                    "symbol": defaultCurrency.symbol
+                },
+                "my_quantity": myQuantity
+            }, null, 4);
+
+        fs.writeFile(configFile, newConfig, function(error) {
+            if (error) {
+                console.log('Something wrong happened, could not save new quantity.');
+                process.exit(0);
+            } else {
+                console.log('My quantity set to: ' + myQuantity);
+            }
+        });
+    }
+
+    // Print value of myQuantity
+    if (defaultCurrency.code === 'USD') {
+        btcValue(cli.flags.d, myQuantity).then((value) => {
+            console.log(defaultCurrency.symbol + value);
+        });
+    } else {
+        btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, myQuantity).then((value) => {
+            console.log(defaultCurrency.symbol + value);
+        });
+    }
 } else {
     checkForMoreFlags();
 }
 
 // If q flag is set, but not assigned any value 
 if (cli.flags.q === true) {
-    console.log('Please choose a valid quantity for the -q flag');
+    console.log('Please choose a valid quantity for the q flag');
     console.log('Type `btc-value --help` to see how to use the flag');
     process.exit(0);
 }
