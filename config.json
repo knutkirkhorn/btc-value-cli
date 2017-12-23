@@ -2,5 +2,6 @@
     "default": {
         "code": "USD",
         "symbol": "$"
-    }
+    },
+    "my_quantity": 1
 }

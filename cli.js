@@ -6,16 +6,18 @@ const fs = require('fs');
 const configFile = __dirname + '/config.json';
 const config = require(configFile);
 let defaultCurrency = config.default;
+let myQuantity = config.my_quantity;
 
 const cli = meow(`
         Usage
         $ btc-value
         
         Options
-          --double -d           Print value as double
-          --save -s [code]      Set the currency that will be used by default
-          --currency -c [code]  Print the value in another currency         
-          --list -l             Print a list of all available currencies
+          --double -d               Print value as double
+          --save -s [code]          Set the currency that will be used by default
+          --currency -c [code]      Print the value in another currency         
+          --list -l                 Print a list of all available currencies
+          --quantity -q [number]    Print the value of the given quantity
 
         Examples
         $ btc-value
@@ -27,6 +29,7 @@ const cli = meow(`
             kr158053
         $ btc-value -c NOK
             kr129640
+        $ btc-value -q 2.2
 `, {
     flags: {
         double: {
@@ -44,6 +47,10 @@ const cli = meow(`
         list: {
             type: 'boolean',
             alias: 'l'
+        },
+        quantity: {
+            type: 'double',
+            alias: 'q'
         }
     }
 });
@@ -88,7 +95,8 @@ if (cli.flags.s !== undefined) {
             "default": {
                 "code": defaultCurrency.code,
                 "symbol": defaultCurrency.symbol
-            }
+            },
+            "quantity": myQuantity
         }, null, 4);
 
     fs.writeFile(configFile, newConfig, function(error) {
@@ -98,11 +106,17 @@ if (cli.flags.s !== undefined) {
         } else {
             console.log('Default currency set to: ' + defaultCurrency.code + ' (' + defaultCurrency.symbol + ')');
             checkForMoreFlags();
-            
         }
     });
 } else {
     checkForMoreFlags();
+}
+
+// If q flag is set, but not assigned any value 
+if (cli.flags.q === true) {
+    console.log('Please choose a valid quantity for the -q flag');
+    console.log('Type `btc-value --help` to see how to use the flag');
+    process.exit(0);
 }
 
 // If d flag is set => return value as double
@@ -113,21 +127,21 @@ function checkForMoreFlags() {
         const currency = isValidCurrencyCode(cli.flags.c);
     
         if (currency.code === 'USD') {
-            btcValue(cli.flags.d).then((value) => {
+            btcValue(cli.flags.d, cli.flags.q).then((value) => {
                 console.log(currency.symbol + value);
             });
         } else {
-            btcValue.getConvertedValue(currency.code, cli.flags.d).then((value) => {
+            btcValue.getConvertedValue(currency.code, cli.flags.d, cli.flags.q).then((value) => {
                 console.log(currency.symbol + value);
             });
         }
     } else {
         if (defaultCurrency.code === 'USD') {
-            btcValue(cli.flags.d).then((value) => {
+            btcValue(cli.flags.d, cli.flags.q).then((value) => {
                 console.log(defaultCurrency.symbol + value);
             });
         } else {
-            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d).then((value) => {
+            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, cli.flags.q).then((value) => {
                 console.log(defaultCurrency.symbol + value);
             });
         }
