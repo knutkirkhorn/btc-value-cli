@@ -110,7 +110,6 @@ if (cli.flags.s !== undefined) {
             process.exit(0);
         } else {
             console.log('Default currency set to: ' + defaultCurrency.code + ' (' + defaultCurrency.symbol + ')');
-            checkForMoreFlags();
         }
     });
 }
