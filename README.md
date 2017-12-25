@@ -18,6 +18,8 @@ $ btc-value --help
           --save -s [code]      Set the currency that will be used by default
           --currency -c [code]  Print the value in another currency         
           --list -l             Print a list of all available currencies
+          --quantity -q [number]    Print the value of the given quantity
+          --myquantity -m [number]  Set my quantity, or print it if [number] is nothing
 
         Examples
         $ btc-value

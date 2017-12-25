@@ -7,6 +7,7 @@ const configFile = __dirname + '/config.json';
 const config = require(configFile);
 let defaultCurrency = config.default;
 let myQuantity = config.my_quantity;
+let countdownTimer = config.countdown;
 
 const cli = meow(`
         Usage
@@ -74,7 +75,7 @@ function isValidCurrencyCode(currencyCode) {
     if (!currency) {
         console.log('Please choose a valid currency code');
         console.log('Type `btc-value -l` for a list of valid currencies');
-        process.exit(0);
+        process.exit(1);
     }
     return currency;
 }
@@ -107,7 +108,7 @@ if (cli.flags.s !== undefined) {
     fs.writeFile(configFile, newConfig, function(error) {
         if (error) {
             console.log('Something wrong happened, could not save new default currency.');
-            process.exit(0);
+            process.exit(1);
         } else {
             console.log('Default currency set to: ' + defaultCurrency.code + ' (' + defaultCurrency.symbol + ')');
         }
@@ -118,7 +119,7 @@ if (cli.flags.m) {
     if (cli.flags.q) {
         console.log('Can not write both m and q flag');
         console.log('Type `btc-value --help` to see how to use the flags');
-        process.exit(0);
+        process.exit(1);
     }
 
     if (typeof cli.flags.m === 'number') {
