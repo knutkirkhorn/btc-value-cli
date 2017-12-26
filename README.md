@@ -14,12 +14,13 @@ $ btc-value --help
         $ btc-value
         
         Options
-          --double -d           Print value as double
-          --save -s [code]      Set the currency that will be used by default
-          --currency -c [code]  Print the value in another currency         
-          --list -l             Print a list of all available currencies
-          --quantity -q [number]    Print the value of the given quantity
-          --myquantity -m [number]  Set my quantity, or print it if [number] is nothing
+          --double -d                   Print value as double
+          --save -s [code]              Set the currency that will be used by default
+          --currency -c [code]          Print the value in another currency         
+          --list -l                     Print a list of all available currencies
+          --quantity -q [number]        Print the value of the given quantity
+          --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
+          --autorefresh -a [seconds]    Automatic refresh printing every x seconds
 
         Examples
         $ btc-value
@@ -58,6 +59,9 @@ Print the value of the given quantity. Input quantity can be either ```double```
 
 ### `--myquantity`, `-m [number]`
 Set my quantity if [number] is a number. Otherwise print the value of the locally stored `my_quantity` in the [config.json](config.json) file.
+
+### `--autorefresh`, `-a [seconds]`
+Set a interval that print the value every `[seconds]` seconds. If [seconds] is not set the default interval time is used (15s). This is stored in the [config.json](config.json) file.
 
 ## Related
 - [btc-value](https://github.com/Knutakir/btc-value) - API for this module
