@@ -3,5 +3,6 @@
         "code": "USD",
         "symbol": "$"
     },
-    "my_quantity": 1
+    "my_quantity": 1,
+    "countdown": 15
 }
