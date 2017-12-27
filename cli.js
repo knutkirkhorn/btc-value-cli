@@ -114,7 +114,7 @@ if (cli.flags.a !== undefined) {
 }
 checkAllFlags();
 
-// For calling all funtions every time in interval with `a` flag
+// For calling all funtions every time in a interval with `a` flag
 function checkAllFlags() {
     // If `c` flag is set => set currency as default
     if (cli.flags.s !== undefined) {
@@ -167,6 +167,7 @@ function checkAllFlags() {
                 }
             });
         }
+        console.log('Value of ' + myQuantity + ' BTC:');
 
         // Print value of `myQuantity`
         if (defaultCurrency.code === 'USD') {
