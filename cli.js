@@ -126,7 +126,8 @@ function checkAllFlags() {
                     "code": defaultCurrency.code,
                     "symbol": defaultCurrency.symbol
                 },
-                "my_quantity": myQuantity
+                "my_quantity": myQuantity,
+                "countdown": countdownTimer
             }, null, 4);
 
         fs.writeFile(configFile, newConfig, function(error) {
@@ -155,7 +156,8 @@ function checkAllFlags() {
                         "code": defaultCurrency.code,
                         "symbol": defaultCurrency.symbol
                     },
-                    "my_quantity": myQuantity
+                    "my_quantity": myQuantity,
+                    "countdown": countdownTimer
                 }, null, 4);
 
             fs.writeFile(configFile, newConfig, function(error) {
@@ -170,14 +172,28 @@ function checkAllFlags() {
         console.log('Value of ' + myQuantity + ' BTC:');
 
         // Print value of `myQuantity`
-        if (defaultCurrency.code === 'USD') {
-            btcValue(cli.flags.d, myQuantity).then((value) => {
-                console.log(defaultCurrency.symbol + value);
-            });
+        if (cli.flags.c) {
+            const currency = isValidCurrencyCode(cli.flags.c);
+        
+            if (currency.code === 'USD') {
+                btcValue(cli.flags.d, myQuantity).then((value) => {
+                    console.log(currency.symbol + value);
+                });
+            } else {
+                btcValue.getConvertedValue(currency.code, cli.flags.d, myQuantity).then((value) => {
+                    console.log(currency.symbol + value);
+                });
+            }
         } else {
-            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, myQuantity).then((value) => {
-                console.log(defaultCurrency.symbol + value);
-            });
+            if (defaultCurrency.code === 'USD') {
+                btcValue(cli.flags.d, myQuantity).then((value) => {
+                    console.log(defaultCurrency.symbol + value);
+                });
+            } else {
+                btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, myQuantity).then((value) => {
+                    console.log(defaultCurrency.symbol + value);
+                });
+            }
         }
     } else {
         checkForMoreFlags();
@@ -188,6 +204,10 @@ function checkAllFlags() {
 // USD is the default currency in the API
 // If `c` flag is set => convert to other currency
 function checkForMoreFlags() {
+    if (cli.flags.q) {
+        console.log('Value of ' + cli.flags.q + ' BTC:');
+    }
+
     if (cli.flags.c) {
         const currency = isValidCurrencyCode(cli.flags.c);
     
