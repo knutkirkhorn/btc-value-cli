@@ -7,7 +7,7 @@ const configFile = __dirname + '/config.json';
 const config = require(configFile);
 let defaultCurrency = config.default;
 let myQuantity = config.my_quantity;
-let countdownTimer = config.countdown;
+let autorefresh = config.autorefresh;
 
 const cli = meow(`
         Usage
@@ -17,7 +17,7 @@ const cli = meow(`
           --double -d                   Print value as double
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
-          --list -l                     Print a list of all available currencies
+          --list -l                     Print a list of all supported currencies
           --quantity -q [number]        Print the value of the given quantity
           --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
@@ -115,9 +115,9 @@ let intervalTimer;
 // If `a` flag is set => set interval for automatic refreshing value printing
 if (cli.flags.a !== undefined) {
     if (cli.flags.a !== true) {
-        countdownTimer = cli.flags.a;
+        autorefresh = cli.flags.a;
     }
-    intervalTimer = setInterval(checkAllFlags, countdownTimer * 1000);
+    intervalTimer = setInterval(checkAllFlags, autorefresh * 1000);
 }
 checkAllFlags();
 
@@ -134,7 +134,7 @@ function checkAllFlags() {
                     "symbol": defaultCurrency.symbol
                 },
                 "my_quantity": myQuantity,
-                "countdown": countdownTimer
+                "countdown": autorefresh
             }, null, 4);
 
         fs.writeFile(configFile, newConfig, function(error) {
@@ -164,7 +164,7 @@ function checkAllFlags() {
                         "symbol": defaultCurrency.symbol
                     },
                     "my_quantity": myQuantity,
-                    "countdown": countdownTimer
+                    "countdown": autorefresh
                 }, null, 4);
 
             fs.writeFile(configFile, newConfig, function(error) {

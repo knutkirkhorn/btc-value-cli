@@ -4,5 +4,5 @@
         "symbol": "$"
     },
     "my_quantity": 1,
-    "countdown": 15
+    "autorefresh": 15
 }

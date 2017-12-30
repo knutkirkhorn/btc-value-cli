@@ -17,7 +17,7 @@ $ btc-value --help
           --double -d                   Print value as double
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
-          --list -l                     Print a list of all available currencies
+          --list -l                     Print a list of all supported currencies
           --quantity -q [number]        Print the value of the given quantity
           --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
@@ -45,7 +45,7 @@ Set the currency that will be used by default. It will save the new default curr
 Print the value in another currency. It will print out the value of the currency code.
 
 ### `--list`, `-l`
-Print a list of all available currencies.
+Print a list of all supported currencies.
 The full list is:
 ```
 AUD, BRL, CAD, CHF, CLP, CNY, CZK, DKK,
