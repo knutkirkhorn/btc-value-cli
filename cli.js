@@ -220,10 +220,9 @@ if (cli.flags.l) {
             currencyOutprint += '\n        ';
         }
         
+        currencyOutprint += btcValue.currencies[i].code;
         if (i !== btcValue.currencies.length - 1) {
-            currencyOutprint += btcValue.currencies[i].code + ', ';
-        } else {
-            currencyOutprint += btcValue.currencies[i].code;
+            currencyOutprint += ', ';
         }
     }
     console.log(currencyOutprint);
@@ -237,6 +236,7 @@ if (cli.flags.q === true) {
     process.exit(1);
 }
 
+// If `p` flag is set => print percentage change
 if (cli.flags.p !== undefined) {
     switch (cli.flags.p) {
         case 'h':
