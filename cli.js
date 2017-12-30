@@ -105,7 +105,7 @@ function checkAllFlags() {
                     "symbol": defaultCurrency.symbol
                 },
                 "my_quantity": myQuantity,
-                "countdown": autorefresh
+                "autorefresh": autorefresh
             }, null, 4);
 
         fs.writeFile(configFile, newConfig, function(error) {
@@ -135,7 +135,7 @@ function checkAllFlags() {
                         "symbol": defaultCurrency.symbol
                     },
                     "my_quantity": myQuantity,
-                    "countdown": autorefresh
+                    "autorefresh": autorefresh
                 }, null, 4);
 
             fs.writeFile(configFile, newConfig, function(error) {
