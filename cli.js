@@ -21,7 +21,7 @@ const cli = meow(`
           --quantity -q [number]        Print the value of the given quantity
           --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
-          --percentage -p [h|d|y]       Print the percentage change
+          --percentage -p [h|d|w]       Print the percentage change
 
         Examples
         $ btc-value
@@ -34,6 +34,8 @@ const cli = meow(`
         $ btc-value -c NOK
             kr129640
         $ btc-value -q 2.2
+        $ btc-value -p h
+            -0.08%
 `, {
     flags: {
         double: {
@@ -235,12 +237,35 @@ if (cli.flags.q === true) {
     process.exit(1);
 }
 
-let intervalTimer;
-// If `a` flag is set => set interval for automatic refreshing value printing
-if (cli.flags.a !== undefined) {
-    if (cli.flags.a !== true) {
-        autorefresh = cli.flags.a;
+if (cli.flags.p !== undefined) {
+    switch (cli.flags.p) {
+        case 'h':
+            btcValue.getPercentageChangeLastHour().then((percentage) => {
+                console.log(percentage + '%');
+                process.exit(0);
+            });
+            break;
+        case 'w':
+            btcValue.getPercentageChangeLastWeek().then((percentage) => {
+                console.log(percentage + '%');
+                process.exit(0);
+            });
+            break;
+        default:
+            btcValue.getPercentageChangeLastDay().then((percentage) => {
+                console.log(percentage + '%');
+                process.exit(0);
+            });
+            break;
+    }  
+} else {
+    let intervalTimer;
+    // If `a` flag is set => set interval for automatic refreshing value printing
+    if (cli.flags.a !== undefined) {
+        if (cli.flags.a !== true) {
+            autorefresh = cli.flags.a;
+        }
+        intervalTimer = setInterval(checkAllFlags, autorefresh * 1000);
     }
-    intervalTimer = setInterval(checkAllFlags, autorefresh * 1000);
+    checkAllFlags();
 }
-checkAllFlags();
