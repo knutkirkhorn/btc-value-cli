@@ -85,15 +85,22 @@ function isValidCurrencyCode(currencyCode) {
     return currency;
 }
 
-// If `l` flag is set => print list of currency codes
+// If `l` flag is set => print list of supported currency codes
 if (cli.flags.l) {
-    console.log(`
-    List of all available currency codes:
-        AUD, BRL, CAD, CHF, CLP, CNY, CZK, DKK,
-        EUR, GBP, HKD, HUF, IDR, ILS, INR, JPY,
-        KRW, MXN, MYR, NOK, NZD, USD, PHP, PKR,
-        PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
-    `);
+    let currencyOutprint = '    List of all supported currency codes:';
+    for (let i = 0; i < btcValue.currencies.length; i++) {
+        // To seperate the currency codes on different lines
+        if (i % 9 === 0) {
+            currencyOutprint += '\n        ';
+        }
+        
+        if (i !== btcValue.currencies.length - 1) {
+            currencyOutprint += btcValue.currencies[i].code + ', ';
+        } else {
+            currencyOutprint += btcValue.currencies[i].code;
+        }
+    }
+    console.log(currencyOutprint);
     process.exit(0);
 }
 
