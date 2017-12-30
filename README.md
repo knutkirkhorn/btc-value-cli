@@ -58,10 +58,10 @@ PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
 Print the value of the given quantity. Input quantity can be either ```double``` or ```integer```.
 
 ### `--myquantity`, `-m [number]`
-Set my quantity if [number] is a number. Otherwise print the value of the locally stored `my_quantity` in the [config.json](config.json) file.
+Set my quantity if `number` is a number. Otherwise print the value of the locally stored `my_quantity` in the [config.json](config.json) file.
 
 ### `--autorefresh`, `-a [seconds]`
-Set a interval that print the value every `[seconds]` seconds. If [seconds] is not set the default interval time is used (15s). This is stored in the [config.json](config.json) file.
+Set a interval that print the value every `seconds` seconds. If `seconds` is not set the default interval time is used (15s). This is stored in the [config.json](config.json) file.
 
 ## Related
 - [btc-value](https://github.com/Knutakir/btc-value) - API for this module
