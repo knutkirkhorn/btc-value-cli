@@ -21,6 +21,7 @@ const cli = meow(`
           --quantity -q [number]        Print the value of the given quantity
           --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
+          --percentage -p [h|d|w]       Print the percentage change
 
         Examples
         $ btc-value
@@ -33,6 +34,8 @@ const cli = meow(`
         $ btc-value -c NOK
             kr129640
         $ btc-value -q 2.2
+        $ btc-value -p h
+            -0.08%
 `, {
     flags: {
         double: {
@@ -62,6 +65,10 @@ const cli = meow(`
         autorefresh: {
             type: 'integer',
             alias: 'a'
+        },
+        percentage: {
+            type: 'string',
+            alias: 'p'
         }
     }
 });
@@ -85,42 +92,6 @@ function isValidCurrencyCode(currencyCode) {
     return currency;
 }
 
-// If `l` flag is set => print list of supported currency codes
-if (cli.flags.l) {
-    let currencyOutprint = '    List of all supported currency codes:';
-    for (let i = 0; i < btcValue.currencies.length; i++) {
-        // To seperate the currency codes on different lines
-        if (i % 9 === 0) {
-            currencyOutprint += '\n        ';
-        }
-        
-        if (i !== btcValue.currencies.length - 1) {
-            currencyOutprint += btcValue.currencies[i].code + ', ';
-        } else {
-            currencyOutprint += btcValue.currencies[i].code;
-        }
-    }
-    console.log(currencyOutprint);
-    process.exit(0);
-}
-
-// If `q` flag is set, but not assigned any value 
-if (cli.flags.q === true) {
-    console.log('Please choose a valid quantity for the q flag');
-    console.log('Type `btc-value --help` to see how to use the flag');
-    process.exit(1);
-}
-
-let intervalTimer;
-// If `a` flag is set => set interval for automatic refreshing value printing
-if (cli.flags.a !== undefined) {
-    if (cli.flags.a !== true) {
-        autorefresh = cli.flags.a;
-    }
-    intervalTimer = setInterval(checkAllFlags, autorefresh * 1000);
-}
-checkAllFlags();
-
 // For calling all funtions every time in a interval with `a` flag
 function checkAllFlags() {
     // If `c` flag is set => set currency as default
@@ -134,7 +105,7 @@ function checkAllFlags() {
                     "symbol": defaultCurrency.symbol
                 },
                 "my_quantity": myQuantity,
-                "countdown": autorefresh
+                "autorefresh": autorefresh
             }, null, 4);
 
         fs.writeFile(configFile, newConfig, function(error) {
@@ -164,7 +135,7 @@ function checkAllFlags() {
                         "symbol": defaultCurrency.symbol
                     },
                     "my_quantity": myQuantity,
-                    "countdown": autorefresh
+                    "autorefresh": autorefresh
                 }, null, 4);
 
             fs.writeFile(configFile, newConfig, function(error) {
@@ -238,4 +209,63 @@ function checkForMoreFlags() {
             });
         }
     }
+}
+
+// If `l` flag is set => print list of supported currency codes
+if (cli.flags.l) {
+    let currencyOutprint = '    List of all supported currency codes:';
+    for (let i = 0; i < btcValue.currencies.length; i++) {
+        // To seperate the currency codes on different lines
+        if (i % 9 === 0) {
+            currencyOutprint += '\n        ';
+        }
+        
+        currencyOutprint += btcValue.currencies[i].code;
+        if (i !== btcValue.currencies.length - 1) {
+            currencyOutprint += ', ';
+        }
+    }
+    console.log(currencyOutprint);
+    process.exit(0);
+}
+
+// If `q` flag is set, but not assigned any value 
+if (cli.flags.q === true) {
+    console.log('Please choose a valid quantity for the q flag');
+    console.log('Type `btc-value --help` to see how to use the flag');
+    process.exit(1);
+}
+
+// If `p` flag is set => print percentage change
+if (cli.flags.p !== undefined) {
+    switch (cli.flags.p) {
+        case 'h':
+            btcValue.getPercentageChangeLastHour().then((percentage) => {
+                console.log(percentage + '%');
+                process.exit(0);
+            });
+            break;
+        case 'w':
+            btcValue.getPercentageChangeLastWeek().then((percentage) => {
+                console.log(percentage + '%');
+                process.exit(0);
+            });
+            break;
+        default:
+            btcValue.getPercentageChangeLastDay().then((percentage) => {
+                console.log(percentage + '%');
+                process.exit(0);
+            });
+            break;
+    }  
+} else {
+    let intervalTimer;
+    // If `a` flag is set => set interval for automatic refreshing value printing
+    if (cli.flags.a !== undefined) {
+        if (cli.flags.a !== true) {
+            autorefresh = cli.flags.a;
+        }
+        intervalTimer = setInterval(checkAllFlags, autorefresh * 1000);
+    }
+    checkAllFlags();
 }
