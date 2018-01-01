@@ -8,6 +8,7 @@ const config = require(configFile);
 let defaultCurrency = config.default;
 let myQuantity = config.my_quantity;
 let autorefresh = config.autorefresh;
+let autorefreshTimer;
 
 const cli = meow(`
         Usage
@@ -86,13 +87,13 @@ function isValidCurrencyCode(currencyCode) {
 
     if (!currency) {
         console.log('Please choose a valid currency code');
-        console.log('Type `btc-value -l` for a list of valid currencies');
+        console.log('Type `btc-value -l` for a list of all valid currencies');
         process.exit(1);
     }
     return currency;
 }
 
-// For calling all funtions every time in a interval with `a` flag
+// For calling all funtions every time in a timeout with `a` flag
 function checkAllFlags() {
     // If `c` flag is set => set currency as default
     if (cli.flags.s !== undefined) {
@@ -120,7 +121,7 @@ function checkAllFlags() {
 
     if (cli.flags.m) {
         if (cli.flags.q) {
-            console.log('Can not write both m and q flag');
+            console.log('Can not use both m and q flag');
             console.log('Type `btc-value --help` to see how to use the flags');
             process.exit(1);
         }
@@ -175,6 +176,40 @@ function checkAllFlags() {
         }
     } else {
         checkForMoreFlags();
+        //TODO: might remove the function and put the code here
+    }
+
+    // If `p` flag is set => print percentage change
+    if (cli.flags.p !== undefined) {
+        //TODO: check if the flag is neither of h, d, w or nothing
+        switch (cli.flags.p) {
+            case 'h':
+                btcValue.getPercentageChangeLastHour().then((percentage) => {
+                    console.log(percentage + '%');
+                    process.exit(0);
+                });
+                break;
+            case 'w':
+                btcValue.getPercentageChangeLastWeek().then((percentage) => {
+                    console.log(percentage + '%');
+                    process.exit(0);
+                });
+                break;
+            default:
+                btcValue.getPercentageChangeLastDay().then((percentage) => {
+                    console.log(percentage + '%');
+                    process.exit(0);
+                });
+                break;
+        }  
+    }
+
+    // If `a` flag is set => set interval for automatic refreshing value printing
+    if (cli.flags.a !== undefined) {
+        if (cli.flags.a !== true) {
+            autorefresh = cli.flags.a;
+        }
+        autorefreshTimer = setTimeout(checkAllFlags, autorefresh * 1000);
     }
 }
 
@@ -236,36 +271,4 @@ if (cli.flags.q === true) {
     process.exit(1);
 }
 
-// If `p` flag is set => print percentage change
-if (cli.flags.p !== undefined) {
-    switch (cli.flags.p) {
-        case 'h':
-            btcValue.getPercentageChangeLastHour().then((percentage) => {
-                console.log(percentage + '%');
-                process.exit(0);
-            });
-            break;
-        case 'w':
-            btcValue.getPercentageChangeLastWeek().then((percentage) => {
-                console.log(percentage + '%');
-                process.exit(0);
-            });
-            break;
-        default:
-            btcValue.getPercentageChangeLastDay().then((percentage) => {
-                console.log(percentage + '%');
-                process.exit(0);
-            });
-            break;
-    }  
-} else {
-    let intervalTimer;
-    // If `a` flag is set => set interval for automatic refreshing value printing
-    if (cli.flags.a !== undefined) {
-        if (cli.flags.a !== true) {
-            autorefresh = cli.flags.a;
-        }
-        intervalTimer = setInterval(checkAllFlags, autorefresh * 1000);
-    }
-    checkAllFlags();
-}
+checkAllFlags();
