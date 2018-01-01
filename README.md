@@ -72,5 +72,5 @@ Print the percentage change the last hour, day and week. If the flag is set to `
 ## Related
 - [btc-value](https://github.com/Knutakir/btc-value) - API for this module
 
-## Licence
+## License
 MIT © [Knut Kirkhorn](LICENSE)
