@@ -1,5 +1,5 @@
 # btc-value-cli
-Get the current Bitcoin value in command line
+> Get the current Bitcoin value in command line
 
 ## Installation
 ```
