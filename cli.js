@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict;'
+'use strict';
 const btcValue = require('btc-value');
 const meow = require('meow');
 const fs = require('fs');
@@ -155,21 +155,21 @@ function checkAllFlags() {
             const currency = isValidCurrencyCode(cli.flags.c);
         
             if (currency.code === 'USD') {
-                btcValue(cli.flags.d, myQuantity).then((value) => {
+                btcValue(cli.flags.d, myQuantity).then(value => {
                     console.log(currency.symbol + value);
                 });
             } else {
-                btcValue.getConvertedValue(currency.code, cli.flags.d, myQuantity).then((value) => {
+                btcValue.getConvertedValue(currency.code, cli.flags.d, myQuantity).then(value => {
                     console.log(currency.symbol + value);
                 });
             }
         } else {
             if (defaultCurrency.code === 'USD') {
-                btcValue(cli.flags.d, myQuantity).then((value) => {
+                btcValue(cli.flags.d, myQuantity).then(value => {
                     console.log(defaultCurrency.symbol + value);
                 });
             } else {
-                btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, myQuantity).then((value) => {
+                btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, myQuantity).then(value => {
                     console.log(defaultCurrency.symbol + value);
                 });
             }
@@ -184,19 +184,19 @@ function checkAllFlags() {
         //TODO: check if the flag is neither of h, d, w or nothing
         switch (cli.flags.p) {
             case 'h':
-                btcValue.getPercentageChangeLastHour().then((percentage) => {
+                btcValue.getPercentageChangeLastHour().then(percentage => {
                     console.log(percentage + '%');
                     process.exit(0);
                 });
                 break;
             case 'w':
-                btcValue.getPercentageChangeLastWeek().then((percentage) => {
+                btcValue.getPercentageChangeLastWeek().then(percentage => {
                     console.log(percentage + '%');
                     process.exit(0);
                 });
                 break;
             default:
-                btcValue.getPercentageChangeLastDay().then((percentage) => {
+                btcValue.getPercentageChangeLastDay().then(percentage => {
                     console.log(percentage + '%');
                     process.exit(0);
                 });
@@ -225,21 +225,21 @@ function checkForMoreFlags() {
         const currency = isValidCurrencyCode(cli.flags.c);
     
         if (currency.code === 'USD') {
-            btcValue(cli.flags.d, cli.flags.q).then((value) => {
+            btcValue(cli.flags.d, cli.flags.q).then(value => {
                 console.log(currency.symbol + value);
             });
         } else {
-            btcValue.getConvertedValue(currency.code, cli.flags.d, cli.flags.q).then((value) => {
+            btcValue.getConvertedValue(currency.code, cli.flags.d, cli.flags.q).then(value => {
                 console.log(currency.symbol + value);
             });
         }
     } else {
         if (defaultCurrency.code === 'USD') {
-            btcValue(cli.flags.d, cli.flags.q).then((value) => {
+            btcValue(cli.flags.d, cli.flags.q).then(value => {
                 console.log(defaultCurrency.symbol + value);
             });
         } else {
-            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, cli.flags.q).then((value) => {
+            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, cli.flags.q).then(value => {
                 console.log(defaultCurrency.symbol + value);
             });
         }

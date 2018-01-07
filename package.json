@@ -31,7 +31,7 @@
   "author": "Knut Kirkhorn",
   "license": "MIT",
   "dependencies": {
-    "btc-value": "^1.4.0",
+    "btc-value": "^1.4.2",
     "meow": "^4.0.0"
   }
 }
