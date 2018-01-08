@@ -59,9 +59,8 @@ PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
 
 ### `--quantity`, `-q [number]`
 Print the value of the given quantity. Input quantity can be either ```double``` or ```integer```.
-
-### `--myquantity`, `-m [number]`
-Set my quantity if `number` is a number. Otherwise print the value of the locally stored `my_quantity` in the [config.json](config.json) file.
+If the input quantity is set to a number, the given quantity is saved locally in the [config.json](config.json) file.
+The `-q` flag can be used with and without a number input.
 
 ### `--autorefresh`, `-a [seconds]`
 Set a timeout that print the value every `seconds` seconds. The timeout restarts after every use. If `seconds` is not set, the default timeout is used (15 seconds). This is stored in the [config.json](config.json) file. The reason a timeout is used instead of a interval, is that it might not finish before the next starts (if bad network connection) and this can use more memory than needed.
