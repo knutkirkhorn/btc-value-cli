@@ -6,7 +6,7 @@ const fs = require('fs');
 const configFile = __dirname + '/config.json';
 const config = require(configFile);
 let defaultCurrency = config.default;
-let myQuantity = config.my_quantity;
+let quantity = config.quantity;
 let autorefresh = config.autorefresh;
 let autorefreshTimer;
 
@@ -20,7 +20,6 @@ const cli = meow(`
           --currency -c [code]          Print the value in another currency         
           --list -l                     Print a list of all supported currencies
           --quantity -q [number]        Print the value of the given quantity
-          --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
           --percentage -p [h|d|w]       Print the percentage change
 
@@ -35,6 +34,7 @@ const cli = meow(`
         $ btc-value -c NOK
             kr129640
         $ btc-value -q 2.2
+            $17273
         $ btc-value -p h
             -0.08%
 `, {
@@ -58,10 +58,6 @@ const cli = meow(`
         quantity: {
             type: 'double',
             alias: 'q'
-        },
-        myquantity: {
-            type: 'double',
-            alias: 'm'
         },
         autorefresh: {
             type: 'integer',
@@ -95,7 +91,7 @@ function isValidCurrencyCode(currencyCode) {
 
 // For calling all funtions every time in a timeout with `a` flag
 function checkAllFlags() {
-    // If `c` flag is set => set currency as default
+    // If `s` flag is set => set currency as default
     if (cli.flags.s !== undefined) {
         defaultCurrency = isValidCurrencyCode(cli.flags.s);
 
@@ -105,7 +101,7 @@ function checkAllFlags() {
                     "code": defaultCurrency.code,
                     "symbol": defaultCurrency.symbol
                 },
-                "my_quantity": myQuantity,
+                "quantity": quantity,
                 "autorefresh": autorefresh
             }, null, 4);
 
@@ -119,23 +115,19 @@ function checkAllFlags() {
         });
     }
 
-    if (cli.flags.m) {
-        if (cli.flags.q) {
-            console.log('Can not use both m and q flag');
-            console.log('Type `btc-value --help` to see how to use the flags');
-            process.exit(1);
-        }
+    let multiplier = 1;
 
-        if (typeof cli.flags.m === 'number') {
-            // Set new value of `myQuantity`
-            myQuantity = cli.flags.m;
+    if (cli.flags.q) {
+        if (typeof cli.flags.q === 'number') {
+            // Save the new value of `quantity`
+            quantity = cli.flags.q;
             const newConfig = JSON.stringify(
                 {
                     "default": {
                         "code": defaultCurrency.code,
                         "symbol": defaultCurrency.symbol
                     },
-                    "my_quantity": myQuantity,
+                    "quantity": quantity,
                     "autorefresh": autorefresh
                 }, null, 4);
 
@@ -144,39 +136,40 @@ function checkAllFlags() {
                     console.log('Something wrong happened, could not save new quantity.');
                     process.exit(1);
                 } else {
-                    console.log('My quantity set to: ' + myQuantity);
+                    console.log('Quantity set to: ' + quantity);
                 }
             });
         }
-        console.log('Value of ' + myQuantity + ' BTC:');
+        console.log('Value of ' + quantity + ' BTC:');
+        multiplier = quantity;
+    }
 
-        // Print value of `myQuantity`
-        if (cli.flags.c) {
-            const currency = isValidCurrencyCode(cli.flags.c);
-        
-            if (currency.code === 'USD') {
-                btcValue(cli.flags.d, myQuantity).then(value => {
-                    console.log(currency.symbol + value);
-                });
-            } else {
-                btcValue.getConvertedValue(currency.code, cli.flags.d, myQuantity).then(value => {
-                    console.log(currency.symbol + value);
-                });
-            }
+    // If `d` flag is set => return value as double
+    // USD is the default currency in the API
+    // If `c` flag is set => convert to other currency
+    // Print value of given `quantity` or just 1 BTC
+    if (cli.flags.c) {
+        const currency = isValidCurrencyCode(cli.flags.c);
+    
+        if (currency.code === 'USD') {
+            btcValue(cli.flags.d, multiplier).then(value => {
+                console.log(currency.symbol + value);
+            });
         } else {
-            if (defaultCurrency.code === 'USD') {
-                btcValue(cli.flags.d, myQuantity).then(value => {
-                    console.log(defaultCurrency.symbol + value);
-                });
-            } else {
-                btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, myQuantity).then(value => {
-                    console.log(defaultCurrency.symbol + value);
-                });
-            }
+            btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
+                console.log(currency.symbol + value);
+            });
         }
     } else {
-        checkForMoreFlags();
-        //TODO: might remove the function and put the code here
+        if (defaultCurrency.code === 'USD') {
+            btcValue(cli.flags.d, multiplier).then(value => {
+                console.log(defaultCurrency.symbol + value);
+            });
+        } else {
+            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
+                console.log(defaultCurrency.symbol + value);
+            });
+        }
     }
 
     // If `p` flag is set => print percentage change
@@ -201,7 +194,7 @@ function checkAllFlags() {
                     process.exit(0);
                 });
                 break;
-        }  
+        } 
     }
 
     // If `a` flag is set => set interval for automatic refreshing value printing
@@ -213,46 +206,13 @@ function checkAllFlags() {
     }
 }
 
-// If `d` flag is set => return value as double
-// USD is the default currency in the API
-// If `c` flag is set => convert to other currency
-function checkForMoreFlags() {
-    if (cli.flags.q) {
-        console.log('Value of ' + cli.flags.q + ' BTC:');
-    }
-
-    if (cli.flags.c) {
-        const currency = isValidCurrencyCode(cli.flags.c);
-    
-        if (currency.code === 'USD') {
-            btcValue(cli.flags.d, cli.flags.q).then(value => {
-                console.log(currency.symbol + value);
-            });
-        } else {
-            btcValue.getConvertedValue(currency.code, cli.flags.d, cli.flags.q).then(value => {
-                console.log(currency.symbol + value);
-            });
-        }
-    } else {
-        if (defaultCurrency.code === 'USD') {
-            btcValue(cli.flags.d, cli.flags.q).then(value => {
-                console.log(defaultCurrency.symbol + value);
-            });
-        } else {
-            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, cli.flags.q).then(value => {
-                console.log(defaultCurrency.symbol + value);
-            });
-        }
-    }
-}
-
 // If `l` flag is set => print list of supported currency codes
 if (cli.flags.l) {
-    let currencyOutprint = '    List of all supported currency codes:';
+    let currencyOutprint = '  List of all supported currency codes:';
     for (let i = 0; i < btcValue.currencies.length; i++) {
         // To seperate the currency codes on different lines
         if (i % 9 === 0) {
-            currencyOutprint += '\n        ';
+            currencyOutprint += '\n      ';
         }
         
         currencyOutprint += btcValue.currencies[i].code;
@@ -262,13 +222,6 @@ if (cli.flags.l) {
     }
     console.log(currencyOutprint);
     process.exit(0);
-}
-
-// If `q` flag is set, but not assigned any value 
-if (cli.flags.q === true) {
-    console.log('Please choose a valid quantity for the q flag');
-    console.log('Type `btc-value --help` to see how to use the flag');
-    process.exit(1);
 }
 
 checkAllFlags();

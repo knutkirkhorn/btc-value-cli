@@ -3,6 +3,6 @@
         "code": "USD",
         "symbol": "$"
     },
-    "my_quantity": 1,
+    "quantity": 1,
     "autorefresh": 15
 }
