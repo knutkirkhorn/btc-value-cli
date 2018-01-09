@@ -149,14 +149,20 @@ function checkAllFlags() {
         if (cli.flags.p == 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
                 console.log(percentage + '%');
+            }).catch(() => {
+                console.log('Please check your internet connection');
             });
         } else if (cli.flags.p == 'd' || cli.flags.p == '') {
             btcValue.getPercentageChangeLastDay().then(percentage => {
                 console.log(percentage + '%');
+            }).catch(() => {
+                console.log('Please check your internet connection');
             });
         } else if (cli.flags.p == 'w') {
             btcValue.getPercentageChangeLastWeek().then(percentage => {
                 console.log(percentage + '%');
+            }).catch(() => {
+                console.log('Please check your internet connection');
             });
         } else {
             console.log('Invalid percentage input. Check `btc-value --help`.');
@@ -173,20 +179,28 @@ function checkAllFlags() {
             if (currency.code === 'USD') {
                 btcValue(cli.flags.d, multiplier).then(value => {
                     console.log(currency.symbol + value);
+                }).catch(() => {
+                    console.log('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
                     console.log(currency.symbol + value);
+                }).catch(() => {
+                    console.log('Please check your internet connection');
                 });
             }
         } else {
             if (defaultCurrency.code === 'USD') {
                 btcValue(cli.flags.d, multiplier).then(value => {
                     console.log(defaultCurrency.symbol + value);
+                }).catch(() => {
+                    console.log('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
                     console.log(defaultCurrency.symbol + value);
+                }).catch(() => {
+                    console.log('Please check your internet connection');
                 });
             }
         }
