@@ -144,57 +144,53 @@ function checkAllFlags() {
         multiplier = quantity;
     }
 
-    // If `d` flag is set => return value as double
-    // USD is the default currency in the API
-    // If `c` flag is set => convert to other currency
-    // Print value of given `quantity` or just 1 BTC
-    if (cli.flags.c) {
-        const currency = isValidCurrencyCode(cli.flags.c);
-    
-        if (currency.code === 'USD') {
-            btcValue(cli.flags.d, multiplier).then(value => {
-                console.log(currency.symbol + value);
-            });
-        } else {
-            btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
-                console.log(currency.symbol + value);
-            });
-        }
-    } else {
-        if (defaultCurrency.code === 'USD') {
-            btcValue(cli.flags.d, multiplier).then(value => {
-                console.log(defaultCurrency.symbol + value);
-            });
-        } else {
-            btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
-                console.log(defaultCurrency.symbol + value);
-            });
-        }
-    }
-
     // If `p` flag is set => print percentage change
     if (cli.flags.p !== undefined) {
         //TODO: check if the flag is neither of h, d, w or nothing
-        switch (cli.flags.p) {
-            case 'h':
-                btcValue.getPercentageChangeLastHour().then(percentage => {
-                    console.log(percentage + '%');
-                    process.exit(0);
+        if (cli.flags.p == 'h') {
+            btcValue.getPercentageChangeLastHour().then(percentage => {
+                console.log(percentage + '%');
+            });
+        } else if (cli.flags.p == 'd' || cli.flags.p == '') {
+            btcValue.getPercentageChangeLastDay().then(percentage => {
+                console.log(percentage + '%');
+            });
+        } else if (cli.flags.p == 'w') {
+            btcValue.getPercentageChangeLastWeek().then(percentage => {
+                console.log(percentage + '%');
+            });
+        } else {
+            console.log('Invalid percentage input. Check `btc-value --help`.');
+            process.exit(0);
+        }
+    } else {
+        // If `d` flag is set => return value as double
+        // USD is the default currency in the API
+        // If `c` flag is set => convert to other currency
+        // Print value of given `quantity` or just 1 BTC
+        if (cli.flags.c) {
+            const currency = isValidCurrencyCode(cli.flags.c);
+        
+            if (currency.code === 'USD') {
+                btcValue(cli.flags.d, multiplier).then(value => {
+                    console.log(currency.symbol + value);
                 });
-                break;
-            case 'w':
-                btcValue.getPercentageChangeLastWeek().then(percentage => {
-                    console.log(percentage + '%');
-                    process.exit(0);
+            } else {
+                btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
+                    console.log(currency.symbol + value);
                 });
-                break;
-            default:
-                btcValue.getPercentageChangeLastDay().then(percentage => {
-                    console.log(percentage + '%');
-                    process.exit(0);
+            }
+        } else {
+            if (defaultCurrency.code === 'USD') {
+                btcValue(cli.flags.d, multiplier).then(value => {
+                    console.log(defaultCurrency.symbol + value);
                 });
-                break;
-        } 
+            } else {
+                btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
+                    console.log(defaultCurrency.symbol + value);
+                });
+            }
+        }
     }
 
     // If `a` flag is set => set interval for automatic refreshing value printing
