@@ -146,7 +146,6 @@ function checkAllFlags() {
 
     // If `p` flag is set => print percentage change
     if (cli.flags.p !== undefined) {
-        //TODO: check if the flag is neither of h, d, w or nothing
         if (cli.flags.p == 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
                 console.log(percentage + '%');
@@ -161,7 +160,7 @@ function checkAllFlags() {
             });
         } else {
             console.log('Invalid percentage input. Check `btc-value --help`.');
-            process.exit(0);
+            process.exit(1);
         }
     } else {
         // If `d` flag is set => return value as double
