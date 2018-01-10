@@ -1,4 +1,11 @@
-# btc-value-cli
+<h1 align="center">
+	<br>
+	<img width="360" src="media/logo.svg" alt="btc-value-cli">
+	<br>
+	<br>
+	<br>
+</h1>
+
 > Get the current Bitcoin value in command line
 
 ## Installation
