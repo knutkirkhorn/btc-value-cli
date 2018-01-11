@@ -1,6 +1,6 @@
 <h1 align="center">
 	<br>
-	<img width="360" src="https://github.com/Knutakir/btc-value-cli/blob/master/media/logo.svg" alt="btc-value-cli">
+	<img width="360" src="https://rawgit.com/Knutakir/btc-value-cli/master/media/logo.svg" alt="btc-value-cli">
 	<br>
 	<br>
 	<br>
