@@ -119,26 +119,29 @@ function checkAllFlags() {
 
     if (cli.flags.q) {
         if (typeof cli.flags.q === 'number') {
-            // Save the new value of `quantity`
-            quantity = cli.flags.q;
-            const newConfig = JSON.stringify(
-                {
-                    "default": {
-                        "code": defaultCurrency.code,
-                        "symbol": defaultCurrency.symbol
-                    },
-                    "quantity": quantity,
-                    "autorefresh": autorefresh
-                }, null, 4);
+            // Check if quantity is not the same as the old one
+            if (quantity !== cli.flags.q) {
+                // Save the new value of `quantity`
+                quantity = cli.flags.q;
+                const newConfig = JSON.stringify(
+                    {
+                        "default": {
+                            "code": defaultCurrency.code,
+                            "symbol": defaultCurrency.symbol
+                        },
+                        "quantity": quantity,
+                        "autorefresh": autorefresh
+                    }, null, 4);
 
-            fs.writeFile(configFile, newConfig, function(error) {
-                if (error) {
-                    console.log('Something wrong happened, could not save new quantity.');
-                    process.exit(1);
-                } else {
-                    console.log('Quantity set to: ' + quantity);
-                }
-            });
+                fs.writeFile(configFile, newConfig, function(error) {
+                    if (error) {
+                        console.log('Something wrong happened, could not save new quantity.');
+                        process.exit(1);
+                    } else {
+                        console.log('Quantity set to: ' + quantity);
+                    }
+                });
+            }
         }
         console.log('Value of ' + quantity + ' BTC:');
         multiplier = quantity;
