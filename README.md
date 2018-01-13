@@ -7,6 +7,7 @@
 </h1>
 
 > Get the current Bitcoin value in command line
+[![Build Status](https://travis-ci.org/Knutakir/btc-value-cli.svg?branch=master)](https://travis-ci.org/Knutakir/btc-value-cli)
 
 ## Installation
 ```
