@@ -3,6 +3,7 @@
 const btcValue = require('btc-value');
 const meow = require('meow');
 const fs = require('fs');
+const chalk = require('chalk');
 const Ora = require('ora');
 const spinner = new Ora();
 const configFile = __dirname + '/config.json';
@@ -99,6 +100,15 @@ function printOutput(input) {
     console.log(input);
 }
 
+// Helper function for printing percentage in red and green
+function printPercentage(percentage) {
+    if (percentage.startsWith('-')) {
+        printOutput(chalk.redBright(percentage));
+    } else {
+        printOutput(chalk.green(percentage));
+    }
+}
+
 // For calling all funtions every time in a timeout with `a` flag
 function checkAllFlags() {
     spinner.start();
@@ -164,27 +174,28 @@ function checkAllFlags() {
     if (cli.flags.p !== undefined) {
         if (cli.flags.p == 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
-                printOutput(percentage + '%');
+                printPercentage(percentage + '%');
             }).catch(() => {
                 console.log('Please check your internet connection');
                 process.exit(1);
             });
         } else if (cli.flags.p == 'd' || cli.flags.p == '') {
             btcValue.getPercentageChangeLastDay().then(percentage => {
-                printOutput(percentage + '%');
+                printPercentage(percentage + '%');
             }).catch(() => {
                 console.log('Please check your internet connection');
                 process.exit(1);
             });
         } else if (cli.flags.p == 'w') {
             btcValue.getPercentageChangeLastWeek().then(percentage => {
-                printOutput(percentage + '%');
+                printPercentage(percentage + '%');
             }).catch(() => {
                 console.log('Please check your internet connection');
                 process.exit(1);
             });
         } else {
-            console.log('Invalid percentage input. Check `btc-value --help`.');
+            spinner.stop();
+            console.log(chalk.redBright('❌  Invalid percentage input. Check `btc-value --help`.'));
             process.exit(1);
         }
     } else {
