@@ -180,7 +180,6 @@ function checkAllFlags() {
     if (cli.flags.p !== undefined) {
         if (cli.flags.p == 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
-                printss();
                 printPercentage(percentage + '%');
             }).catch(() => {
                 exitError('Please check your internet connection');
@@ -198,7 +197,6 @@ function checkAllFlags() {
                 exitError('Please check your internet connection');
             });
         } else {
-            spinner.stop();
             exitError('Invalid percentage input. Check `btc-value --help`.');
         }
     } else {
@@ -246,6 +244,7 @@ function checkAllFlags() {
         }
 
         autorefreshTimer = setTimeout(checkAllFlags, autorefresh * 1000);
+        spinner.start();
     }
 }
 
