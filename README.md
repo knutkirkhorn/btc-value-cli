@@ -76,6 +76,7 @@ Set a timeout that print the value every `seconds` seconds. The timeout restarts
 
 ### `--percentage`, `-p [h|d|w]`
 Print the percentage change the last hour, day and week. If the flag is set to `h` then percentage change last hour is printed. It is the same for `d` and days, and `w` and week.
+If the percentage is negative it is printed in bright red otherwise it is printed in green.
 
 ## Related
 - [btc-value](https://github.com/Knutakir/btc-value) - API for this module

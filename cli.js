@@ -3,6 +3,9 @@
 const btcValue = require('btc-value');
 const meow = require('meow');
 const fs = require('fs');
+const chalk = require('chalk');
+const Ora = require('ora');
+const spinner = new Ora();
 const configFile = __dirname + '/config.json';
 const config = require(configFile);
 let defaultCurrency = config.default;
@@ -74,6 +77,7 @@ const cli = meow(`
 function isValidCurrencyCode(currencyCode) {
     currencyCode = currencyCode.toUpperCase();
     let currency;
+
     for (let i = 0; i < btcValue.currencies.length; i++) {
         if (currencyCode === btcValue.currencies[i].code) {
             currency = btcValue.currencies[i];
@@ -82,11 +86,35 @@ function isValidCurrencyCode(currencyCode) {
     }
 
     if (!currency) {
-        console.log('Please choose a valid currency code');
+        spinner.stop();
+        console.log(chalk.redBright('❌  Please choose a valid currency code'));
         console.log('Type `btc-value -l` for a list of all valid currencies');
         process.exit(1);
     }
+
     return currency;
+}
+
+// Helper functon for printing and stopping the spinner
+function printOutput(input) {
+    spinner.stop();
+    console.log(input);
+}
+
+// Helper function for printing percentage in red and green
+function printPercentage(percentage) {
+    if (percentage.startsWith('-')) {
+        printOutput(chalk.redBright(percentage));
+    } else {
+        printOutput(chalk.green(percentage));
+    }
+}
+
+// Helper function to print error and exit with code 1
+function exitError(error) {
+    spinner.stop();
+    console.log(chalk.redBright(`❌  ${error}`));
+    process.exit(1);
 }
 
 // For calling all funtions every time in a timeout with `a` flag
@@ -97,20 +125,19 @@ function checkAllFlags() {
 
         const newConfig = JSON.stringify(
             {
-                "default": {
-                    "code": defaultCurrency.code,
-                    "symbol": defaultCurrency.symbol
+                default: {
+                    code: defaultCurrency.code,
+                    symbol: defaultCurrency.symbol
                 },
-                "quantity": quantity,
-                "autorefresh": autorefresh
+                quantity: quantity,
+                autorefresh: autorefresh
             }, null, 4);
 
         fs.writeFile(configFile, newConfig, function(error) {
             if (error) {
-                console.log('Something wrong happened, could not save new default currency.');
-                process.exit(1);
+                exitError('Something wrong happened, could not save new default currency.');
             } else {
-                console.log('Default currency set to: ' + defaultCurrency.code + ' (' + defaultCurrency.symbol + ')');
+                console.log(chalk.green(`✔️  Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`));
             }
         });
     }
@@ -125,25 +152,29 @@ function checkAllFlags() {
                 quantity = cli.flags.q;
                 const newConfig = JSON.stringify(
                     {
-                        "default": {
-                            "code": defaultCurrency.code,
-                            "symbol": defaultCurrency.symbol
+                        default: {
+                            code: defaultCurrency.code,
+                            symbol: defaultCurrency.symbol
                         },
-                        "quantity": quantity,
-                        "autorefresh": autorefresh
+                        quantity: quantity,
+                        autorefresh: autorefresh
                     }, null, 4);
 
                 fs.writeFile(configFile, newConfig, function(error) {
                     if (error) {
-                        console.log('Something wrong happened, could not save new quantity.');
-                        process.exit(1);
+                        exitError('Something wrong happened, could not save new quantity.');
                     } else {
-                        console.log('Quantity set to: ' + quantity);
+                        console.log(chalk.green(`✔️  Quantity set to: ${quantity}`));
+                        console.log(`Value of ${quantity} BTC:`);
+                        spinner.start();
                     }
                 });
             }
+        } else {
+            console.log(`Value of ${quantity} BTC:`);
+            spinner.start();
         }
-        console.log('Value of ' + quantity + ' BTC:');
+
         multiplier = quantity;
     }
 
@@ -151,25 +182,24 @@ function checkAllFlags() {
     if (cli.flags.p !== undefined) {
         if (cli.flags.p == 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
-                console.log(percentage + '%');
+                printPercentage(percentage + '%');
             }).catch(() => {
-                console.log('Please check your internet connection');
+                exitError('Please check your internet connection');
             });
         } else if (cli.flags.p == 'd' || cli.flags.p == '') {
             btcValue.getPercentageChangeLastDay().then(percentage => {
-                console.log(percentage + '%');
+                printPercentage(percentage + '%');
             }).catch(() => {
-                console.log('Please check your internet connection');
+                exitError('Please check your internet connection');
             });
         } else if (cli.flags.p == 'w') {
             btcValue.getPercentageChangeLastWeek().then(percentage => {
-                console.log(percentage + '%');
+                printPercentage(percentage + '%');
             }).catch(() => {
-                console.log('Please check your internet connection');
+                exitError('Please check your internet connection');
             });
         } else {
-            console.log('Invalid percentage input. Check `btc-value --help`.');
-            process.exit(1);
+            exitError('Invalid percentage input. Check `btc-value --help`.');
         }
     } else {
         // If `d` flag is set => return value as double
@@ -181,29 +211,29 @@ function checkAllFlags() {
         
             if (currency.code === 'USD') {
                 btcValue(cli.flags.d, multiplier).then(value => {
-                    console.log(currency.symbol + value);
+                    printOutput(currency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
+                    exitError('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
-                    console.log(currency.symbol + value);
+                    printOutput(currency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
+                    exitError('Please check your internet connection');
                 });
             }
         } else {
             if (defaultCurrency.code === 'USD') {
                 btcValue(cli.flags.d, multiplier).then(value => {
-                    console.log(defaultCurrency.symbol + value);
+                    printOutput(defaultCurrency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
+                    exitError('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
-                    console.log(defaultCurrency.symbol + value);
+                    printOutput(defaultCurrency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
+                    exitError('Please check your internet connection');
                 });
             }
         }
@@ -214,13 +244,16 @@ function checkAllFlags() {
         if (cli.flags.a !== true) {
             autorefresh = cli.flags.a;
         }
+
         autorefreshTimer = setTimeout(checkAllFlags, autorefresh * 1000);
+        spinner.start();
     }
 }
 
 // If `l` flag is set => print list of supported currency codes
 if (cli.flags.l) {
     let currencyOutprint = '  List of all supported currency codes:';
+
     for (let i = 0; i < btcValue.currencies.length; i++) {
         // To seperate the currency codes on different lines
         if (i % 9 === 0) {
@@ -232,6 +265,7 @@ if (cli.flags.l) {
             currencyOutprint += ', ';
         }
     }
+
     console.log(currencyOutprint);
     process.exit(0);
 }
