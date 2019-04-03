@@ -119,8 +119,6 @@ function exitError(error) {
 
 // For calling all funtions every time in a timeout with `a` flag
 function checkAllFlags() {
-    spinner.start();
-
     // If `s` flag is set => set currency as default
     if (cli.flags.s !== undefined) {
         defaultCurrency = isValidCurrencyCode(cli.flags.s);
@@ -139,7 +137,7 @@ function checkAllFlags() {
             if (error) {
                 exitError('Something wrong happened, could not save new default currency.');
             } else {
-                console.log(`Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`);
+                console.log(chalk.green(`✔️  Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`));
             }
         });
     }
@@ -166,13 +164,17 @@ function checkAllFlags() {
                     if (error) {
                         exitError('Something wrong happened, could not save new quantity.');
                     } else {
-                        console.log(`Quantity set to: ${quantity}`);
+                        console.log(chalk.green(`✔️  Quantity set to: ${quantity}`));
+                        console.log(`Value of ${quantity} BTC:`);
+                        spinner.start();
                     }
                 });
             }
+        } else {
+            console.log(`Value of ${quantity} BTC:`);
+            spinner.start();
         }
 
-        console.log(`Value of ${quantity} BTC:`);
         multiplier = quantity;
     }
 
