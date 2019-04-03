@@ -86,7 +86,8 @@ function isValidCurrencyCode(currencyCode) {
     }
 
     if (!currency) {
-        console.log('Please choose a valid currency code');
+        spinner.stop();
+        console.log(chalk.redBright('❌  Please choose a valid currency code'));
         console.log('Type `btc-value -l` for a list of all valid currencies');
         process.exit(1);
     }
@@ -109,6 +110,13 @@ function printPercentage(percentage) {
     }
 }
 
+// Helper function to print error and exit with code 1
+function exitError(error) {
+    spinner.stop();
+    console.log(chalk.redBright(`❌  ${error}`));
+    process.exit(1);
+}
+
 // For calling all funtions every time in a timeout with `a` flag
 function checkAllFlags() {
     spinner.start();
@@ -125,12 +133,11 @@ function checkAllFlags() {
                 },
                 quantity: quantity,
                 autorefresh: autorefresh
-            }, null, 4); // TODO: check this stuff
+            }, null, 4);
 
         fs.writeFile(configFile, newConfig, function(error) {
             if (error) {
-                console.log('Something wrong happened, could not save new default currency.');
-                process.exit(1);
+                exitError('Something wrong happened, could not save new default currency.');
             } else {
                 console.log(`Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`);
             }
@@ -157,8 +164,7 @@ function checkAllFlags() {
 
                 fs.writeFile(configFile, newConfig, function(error) {
                     if (error) {
-                        console.log('Something wrong happened, could not save new quantity.');
-                        process.exit(1);
+                        exitError('Something wrong happened, could not save new quantity.');
                     } else {
                         console.log(`Quantity set to: ${quantity}`);
                     }
@@ -174,29 +180,26 @@ function checkAllFlags() {
     if (cli.flags.p !== undefined) {
         if (cli.flags.p == 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
+                printss();
                 printPercentage(percentage + '%');
             }).catch(() => {
-                console.log('Please check your internet connection');
-                process.exit(1);
+                exitError('Please check your internet connection');
             });
         } else if (cli.flags.p == 'd' || cli.flags.p == '') {
             btcValue.getPercentageChangeLastDay().then(percentage => {
                 printPercentage(percentage + '%');
             }).catch(() => {
-                console.log('Please check your internet connection');
-                process.exit(1);
+                exitError('Please check your internet connection');
             });
         } else if (cli.flags.p == 'w') {
             btcValue.getPercentageChangeLastWeek().then(percentage => {
                 printPercentage(percentage + '%');
             }).catch(() => {
-                console.log('Please check your internet connection');
-                process.exit(1);
+                exitError('Please check your internet connection');
             });
         } else {
             spinner.stop();
-            console.log(chalk.redBright('❌  Invalid percentage input. Check `btc-value --help`.'));
-            process.exit(1);
+            exitError('Invalid percentage input. Check `btc-value --help`.');
         }
     } else {
         // If `d` flag is set => return value as double
@@ -210,15 +213,13 @@ function checkAllFlags() {
                 btcValue(cli.flags.d, multiplier).then(value => {
                     printOutput(currency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
-                    process.exit(1);
+                    exitError('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
                     printOutput(currency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
-                    process.exit(1);
+                    exitError('Please check your internet connection');
                 });
             }
         } else {
@@ -226,15 +227,13 @@ function checkAllFlags() {
                 btcValue(cli.flags.d, multiplier).then(value => {
                     printOutput(defaultCurrency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
-                    process.exit(1);
+                    exitError('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
                     printOutput(defaultCurrency.symbol + value);
                 }).catch(() => {
-                    console.log('Please check your internet connection');
-                    process.exit(1);
+                    exitError('Please check your internet connection');
                 });
             }
         }
