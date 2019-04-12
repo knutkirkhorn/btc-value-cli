@@ -211,13 +211,13 @@ function checkAllFlags() {
         
             if (currency.code === 'USD') {
                 btcValue(cli.flags.d, multiplier).then(value => {
-                    printOutput(currency.symbol + value);
+                    printOutput(`${chalk.yellow(currency.symbol)}${value}`);
                 }).catch(() => {
                     exitError('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
-                    printOutput(currency.symbol + value);
+                    printOutput(`${chalk.yellow(currency.symbol)}${value}`);
                 }).catch(() => {
                     exitError('Please check your internet connection');
                 });
@@ -225,13 +225,13 @@ function checkAllFlags() {
         } else {
             if (defaultCurrency.code === 'USD') {
                 btcValue(cli.flags.d, multiplier).then(value => {
-                    printOutput(defaultCurrency.symbol + value);
+                    printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
                 }).catch(() => {
                     exitError('Please check your internet connection');
                 });
             } else {
                 btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
-                    printOutput(defaultCurrency.symbol + value);
+                    printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
                 }).catch(() => {
                     exitError('Please check your internet connection');
                 });
