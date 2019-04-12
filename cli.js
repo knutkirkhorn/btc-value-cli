@@ -180,19 +180,19 @@ function checkAllFlags() {
 
     // If `p` flag is set => print percentage change
     if (cli.flags.p !== undefined) {
-        if (cli.flags.p == 'h') {
+        if (cli.flags.p === 'h') {
             btcValue.getPercentageChangeLastHour().then(percentage => {
                 printPercentage(percentage + '%');
             }).catch(() => {
                 exitError('Please check your internet connection');
             });
-        } else if (cli.flags.p == 'd' || cli.flags.p == '') {
+        } else if (cli.flags.p === 'd' || cli.flags.p === '') {
             btcValue.getPercentageChangeLastDay().then(percentage => {
                 printPercentage(percentage + '%');
             }).catch(() => {
                 exitError('Please check your internet connection');
             });
-        } else if (cli.flags.p == 'w') {
+        } else if (cli.flags.p === 'w') {
             btcValue.getPercentageChangeLastWeek().then(percentage => {
                 printPercentage(percentage + '%');
             }).catch(() => {
