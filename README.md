@@ -23,7 +23,7 @@ $ btc-value --help
         $ btc-value
         
         Options
-          --double -d                   Print value as double
+          --decimal -d                  Print value as decimal number
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
           --list -l                     Print a list of all supported currencies
@@ -47,8 +47,8 @@ $ btc-value --help
 ```
 
 ## Options
-### `--double`, `-d`
-Print the value as a double.
+### `--decimal`, `-d`
+Print the value as a decimal number.
 
 ### `--save`, `-s [code]`
 Set the currency that will be used by default. It will save the new default currency code and symbol in the [config.json](config.json) file. Next time ```btc-value``` is run in command line it will print the value of the new default currency.
@@ -67,7 +67,7 @@ PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
 ```
 
 ### `--quantity`, `-q [number]`
-Print the value of the given quantity. Input quantity can be either ```double``` or ```integer```.
+Print the value of the given quantity. Input quantity can be either ```decimal``` or ```integer```.
 If the input quantity is set to a number, the given quantity is saved locally in the [config.json](config.json) file.
 The `-q` flag can be used with and without a number input.
 

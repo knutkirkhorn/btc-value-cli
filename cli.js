@@ -18,7 +18,7 @@ const cli = meow(`
         $ btc-value
         
         Options
-          --double -d                   Print value as double
+          --decimal -d                  Print value as decimal
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
           --list -l                     Print a list of all supported currencies
@@ -42,7 +42,7 @@ const cli = meow(`
             -0.08%
 `, {
     flags: {
-        double: {
+        decimal: {
             type: 'boolean',
             alias: 'd'
         },
@@ -202,7 +202,7 @@ function checkAllFlags() {
             exitError('Invalid percentage input. Check `btc-value --help`.');
         }
     } else {
-        // If `d` flag is set => return value as double
+        // If `d` flag is set => return value as decimal
         // USD is the default currency in the API
         // If `c` flag is set => convert to other currency
         // Print value of given `quantity` or just 1 BTC
