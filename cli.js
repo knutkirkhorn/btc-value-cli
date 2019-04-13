@@ -209,33 +209,18 @@ function checkAllFlags() {
         if (cli.flags.c) {
             const currency = isValidCurrencyCode(cli.flags.c);
         
-            if (currency.code === 'USD') {
-                btcValue(cli.flags.d, multiplier).then(value => {
-                    printOutput(`${chalk.yellow(currency.symbol)}${value}`);
-                }).catch(() => {
-                    exitError('Please check your internet connection');
-                });
-            } else {
-                btcValue.getConvertedValue(currency.code, cli.flags.d, multiplier).then(value => {
-                    printOutput(`${chalk.yellow(currency.symbol)}${value}`);
-                }).catch(() => {
-                    exitError('Please check your internet connection');
-                });
-            }
+            btcValue({currencyCode: cli.flags.c, isDecimal: cli.flags.d, quantity: multiplier}).then(value => {
+                printOutput(`${chalk.yellow(currency.symbol)}${value}`);
+            }).catch(e => {
+                console.log(e);
+                exitError('Please check your internet connection');
+            });
         } else {
-            if (defaultCurrency.code === 'USD') {
-                btcValue(cli.flags.d, multiplier).then(value => {
-                    printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
-                }).catch(() => {
-                    exitError('Please check your internet connection');
-                });
-            } else {
-                btcValue.getConvertedValue(defaultCurrency.code, cli.flags.d, multiplier).then(value => {
-                    printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
-                }).catch(() => {
-                    exitError('Please check your internet connection');
-                });
-            }
+            btcValue({currencyCode: defaultCurrency.code, isDecimal: cli.flags.d, quantity: multiplier}).then(value => {
+                printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
+            }).catch(() => {
+                exitError('Please check your internet connection');
+            });
         }
     }
 
