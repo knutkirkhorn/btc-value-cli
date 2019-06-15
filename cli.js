@@ -5,6 +5,7 @@ const meow = require('meow');
 const fs = require('fs');
 const chalk = require('chalk');
 const Ora = require('ora');
+const logSymbols = require('log-symbols');
 const spinner = new Ora();
 const configFile = __dirname + '/config.json';
 const config = require(configFile);
@@ -87,7 +88,7 @@ function isValidCurrencyCode(currencyCode) {
 
     if (!currency) {
         spinner.stop();
-        console.log(chalk.redBright('❌  Please choose a valid currency code'));
+        console.log(chalk.redBright(`${logSymbols.error} Please choose a valid currency code`));
         console.log('Type `btc-value -l` for a list of all valid currencies');
         process.exit(1);
     }
@@ -113,7 +114,7 @@ function printPercentage(percentage) {
 // Helper function to print error and exit with code 1
 function exitError(error) {
     spinner.stop();
-    console.log(chalk.redBright(`❌  ${error}`));
+    console.log(chalk.redBright(`${logSymbols.error} ${error}`));
     process.exit(1);
 }
 
@@ -137,7 +138,7 @@ function checkAllFlags() {
             if (error) {
                 exitError('Something wrong happened, could not save new default currency.');
             } else {
-                console.log(chalk.green(`✔️  Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`));
+                console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`));
             }
         });
     }
@@ -164,7 +165,7 @@ function checkAllFlags() {
                     if (error) {
                         exitError('Something wrong happened, could not save new quantity.');
                     } else {
-                        console.log(chalk.green(`✔️  Quantity set to: ${quantity}`));
+                        console.log(chalk.green(`${logSymbols.success} Quantity set to: ${quantity}`));
                         console.log(`Value of ${quantity} BTC:`);
                         spinner.start();
                     }
