@@ -23,14 +23,13 @@ $ btc-value --help
         $ btc-value
         
         Options
-          --decimal -d                  Print value as decimal number
+          --decimal -d                  Print value as decimal
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
           --list -l                     Print a list of all supported currencies
           --quantity -q [number]        Print the value of the given quantity
-          --myquantity -m [number]      Set my quantity, or print it if [number] is nothing
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
-          --percentage -p [h|d|w]       Print the percentage change
+          --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
 
         Examples
         $ btc-value
@@ -40,8 +39,10 @@ $ btc-value --help
         $ btc-value -s NOK
             Default currency set as: NOK (kr)
             kr158053
-        $ btc-value -c
-            kr131360
+        $ btc-value -c NOK
+            kr129640
+        $ btc-value -q 2.2
+            $17273
         $ btc-value -p h
             -0.08%
 ```

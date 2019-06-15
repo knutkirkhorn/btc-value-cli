@@ -25,7 +25,7 @@ const cli = meow(`
           --list -l                     Print a list of all supported currencies
           --quantity -q [number]        Print the value of the given quantity
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
-          --percentage -p [h|d|w]       Print the percentage change
+          --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
 
         Examples
         $ btc-value
