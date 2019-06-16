@@ -7,12 +7,30 @@ const chalk = require('chalk');
 const Ora = require('ora');
 const logSymbols = require('log-symbols');
 const spinner = new Ora();
+
+const defaultConfiguration = {
+    default: {
+        code: "USD",
+        symbol: "$"
+    },
+    quantity: 1,
+    autorefresh: 15
+};
 const configFile = __dirname + '/config.json';
-const config = require(configFile);
+let config;
+
+try {
+    config = require(configFile);
+} catch (e) {
+    // Set the config to the default if its not found in the file
+    config = defaultConfiguration;
+}
+
 let defaultCurrency = config.default;
 let quantity = config.quantity;
 let autorefresh = config.autorefresh;
 let autorefreshTimer;
+
 
 const cli = meow(`
         Usage
@@ -26,6 +44,7 @@ const cli = meow(`
           --quantity -q [number]        Print the value of the given quantity
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
           --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
+          --reset -r                    Reset the configuration to the default
 
         Examples
         $ btc-value
@@ -70,6 +89,10 @@ const cli = meow(`
         percentage: {
             type: 'string',
             alias: 'p'
+        },
+        reset: {
+            type: 'boolean',
+            alias: 'r'
         }
     }
 });
@@ -254,6 +277,21 @@ if (cli.flags.l) {
 
     console.log(currencyOutprint);
     process.exit(0);
+}
+
+// If `r` falg is set => reset configuration file
+if (cli.flags.r) {
+    const newConfig = JSON.stringify(defaultConfiguration, null, 4);
+
+    fs.writeFile(configFile, newConfig, function(error) {
+        if (error) {
+            exitError('Something wrong happened, could not save new default currency.');
+        } else {
+            console.log(chalk.green(`${logSymbols.success} Default configuration reset to: ${defaultConfiguration.default.code} (${defaultConfiguration.default.symbol})`));
+        }
+
+        process.exit(0);
+    });
 }
 
 checkAllFlags();

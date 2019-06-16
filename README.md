@@ -30,6 +30,7 @@ $ btc-value --help
           --quantity -q [number]        Print the value of the given quantity
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
           --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
+          --reset -r                    Reset the configuration to the default
 
         Examples
         $ btc-value
@@ -78,6 +79,17 @@ Set a timeout that print the value every `seconds` seconds. The timeout restarts
 ### `--percentage`, `-p [h|d|w]`
 Print the percentage change the last hour, day and week. If the flag is set to `h` then percentage change last hour is printed. It is the same for `d` and days, and `w` and week.
 If the percentage is negative it is printed in bright red otherwise it is printed in green.
+
+### `--reset`, `-r`
+Reset the configuration to the default:
+```
+default: {
+    code: "USD",
+    symbol: "$"
+},
+quantity: 1,
+autorefresh: 15
+```
 
 ## Related
 - [btc-value](https://github.com/Knutakir/btc-value) - API for this module
