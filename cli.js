@@ -10,6 +10,7 @@ const spinner = new Ora();
 
 const defaultConfiguration = {
     default: {
+        name: "United States Dollar",
         code: "USD",
         symbol: "$"
     },
@@ -150,6 +151,7 @@ function checkAllFlags() {
         const newConfig = JSON.stringify(
             {
                 default: {
+                    name: defaultCurrency.name,
                     code: defaultCurrency.code,
                     symbol: defaultCurrency.symbol
                 },
@@ -161,7 +163,7 @@ function checkAllFlags() {
             if (error) {
                 exitError('Something wrong happened, could not save new default currency.');
             } else {
-                console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency.code} (${defaultCurrency.symbol})`));
+                console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency.name} (${defaultCurrency.symbol})`));
             }
         });
     }
@@ -177,6 +179,7 @@ function checkAllFlags() {
                 const newConfig = JSON.stringify(
                     {
                         default: {
+                            name: defaultCurrency.name,
                             code: defaultCurrency.code,
                             symbol: defaultCurrency.symbol
                         },
@@ -287,7 +290,7 @@ if (cli.flags.r) {
         if (error) {
             exitError('Something wrong happened, could not save new default currency.');
         } else {
-            console.log(chalk.green(`${logSymbols.success} Default configuration reset to: ${defaultConfiguration.default.code} (${defaultConfiguration.default.symbol})`));
+            console.log(chalk.green(`${logSymbols.success} Default configuration reset to: ${defaultConfiguration.default.name} (${defaultConfiguration.default.symbol})`));
         }
 
         process.exit(0);

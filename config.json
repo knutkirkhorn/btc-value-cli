@@ -1,5 +1,6 @@
 {
     "default": {
+        "name": "United States Dollar",
         "code": "USD",
         "symbol": "$"
     },
