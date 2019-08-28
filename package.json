@@ -31,14 +31,14 @@
   "author": "Knut Kirkhorn",
   "license": "MIT",
   "dependencies": {
-    "btc-value": "^2.1.0",
+    "btc-value": "^2.1.1",
     "chalk": "^2.4.2",
     "log-symbols": "^3.0.0",
     "meow": "^5.0.0",
     "ora": "^3.4.0"
   },
   "devDependencies": {
-    "ava": "^2.1.0",
-    "execa": "^1.0.0"
+    "ava": "^2.3.0",
+    "execa": "^2.0.4"
   }
 }
