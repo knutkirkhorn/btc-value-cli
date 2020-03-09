@@ -15,7 +15,8 @@ const defaultConfiguration = {
         symbol: "$"
     },
     quantity: 1,
-    autorefresh: 15
+    autorefresh: 15,
+    apiKey: ''
 };
 const configFile = __dirname + '/config.json';
 let config;
@@ -30,6 +31,7 @@ try {
 let defaultCurrency = config.default;
 let quantity = config.quantity;
 let autorefresh = config.autorefresh;
+let apiKey = config.apiKey;
 let autorefreshTimer;
 
 
@@ -38,6 +40,7 @@ const cli = meow(`
         $ btc-value
         
         Options
+          --key -k                      Set the API key (Obtain key at: https://coinmarketcap.com/api/)
           --decimal -d                  Print value as decimal
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
@@ -63,6 +66,10 @@ const cli = meow(`
             -0.08%
 `, {
     flags: {
+        key: {
+            type: 'string',
+            alias: 'k'
+        },
         decimal: {
             type: 'boolean',
             alias: 'd'
@@ -142,8 +149,23 @@ function exitError(error) {
     process.exit(1);
 }
 
+function saveConfig(newConfig) {
+    return new Promise((resolve, reject) => {
+        // Save new config file
+        fs.writeFile(configFile, newConfig, function(error) {
+            if (error) {
+                reject();
+                return;
+            } else {
+                resolve();
+                return;
+            }
+        });
+    });
+}
+
 // For calling all funtions every time in a timeout with `a` flag
-function checkAllFlags() {
+async function checkAllFlags() {
     // If `s` flag is set => set currency as default
     if (cli.flags.s !== undefined) {
         defaultCurrency = isValidCurrencyCode(cli.flags.s);
@@ -156,16 +178,16 @@ function checkAllFlags() {
                     symbol: defaultCurrency.symbol
                 },
                 quantity: quantity,
-                autorefresh: autorefresh
+                autorefresh: autorefresh,
+                apiKey: apiKey
             }, null, 4);
 
-        fs.writeFile(configFile, newConfig, function(error) {
-            if (error) {
-                exitError('Something wrong happened, could not save new default currency.');
-            } else {
-                console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency.name} (${defaultCurrency.symbol})`));
-            }
-        });
+        try {
+            await saveConfig(newConfig);
+            console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency.name} (${defaultCurrency.symbol})`));
+        } catch (error) {
+            exitError('Something wrong happened, could not save new default currency.');
+        }
     }
 
     let multiplier = 1;
@@ -184,18 +206,18 @@ function checkAllFlags() {
                             symbol: defaultCurrency.symbol
                         },
                         quantity: quantity,
-                        autorefresh: autorefresh
+                        autorefresh: autorefresh,
+                        apiKey: apiKey
                     }, null, 4);
 
-                fs.writeFile(configFile, newConfig, function(error) {
-                    if (error) {
-                        exitError('Something wrong happened, could not save new quantity.');
-                    } else {
-                        console.log(chalk.green(`${logSymbols.success} Quantity set to: ${quantity}`));
-                        console.log(`Value of ${quantity} BTC:`);
-                        spinner.start();
-                    }
-                });
+                try {
+                    await saveConfig(newConfig);
+                    console.log(chalk.green(`${logSymbols.success} Quantity set to: ${quantity}`));
+                    console.log(`Value of ${quantity} BTC:`);
+                    spinner.start();
+                } catch (error) {
+                    exitError('Something wrong happened, could not save new quantity.');
+                }
             }
         } else {
             console.log(`Value of ${quantity} BTC:`);
@@ -208,23 +230,29 @@ function checkAllFlags() {
     // If `p` flag is set => print percentage change
     if (cli.flags.p !== undefined) {
         if (cli.flags.p === 'h') {
-            btcValue.getPercentageChangeLastHour().then(percentage => {
+            try {
+                const percentage = await btcValue.getPercentageChangeLastHour();
                 printPercentage(percentage + '%');
-            }).catch(() => {
+            } catch (e) {
+                console.log(e);
                 exitError('Please check your internet connection');
-            });
+            }
         } else if (cli.flags.p === 'd' || cli.flags.p === '') {
-            btcValue.getPercentageChangeLastDay().then(percentage => {
+            try {
+                const percentage = await btcValue.getPercentageChangeLastDay();
                 printPercentage(percentage + '%');
-            }).catch(() => {
+            } catch (e) {
+                console.log(e);
                 exitError('Please check your internet connection');
-            });
+            }
         } else if (cli.flags.p === 'w') {
-            btcValue.getPercentageChangeLastWeek().then(percentage => {
+            try {
+                const percentage = await btcValue.getPercentageChangeLastWeek();
                 printPercentage(percentage + '%');
-            }).catch(() => {
+            } catch (e) {
+                console.log(e);
                 exitError('Please check your internet connection');
-            });
+            }
         } else {
             exitError('Invalid percentage input. Check `btc-value --help`.');
         }
@@ -236,18 +264,21 @@ function checkAllFlags() {
         if (cli.flags.c) {
             const currency = isValidCurrencyCode(cli.flags.c);
         
-            btcValue({currencyCode: cli.flags.c, isDecimal: cli.flags.d, quantity: multiplier}).then(value => {
+            try {
+                const value = await btcValue({currencyCode: cli.flags.c, isDecimal: cli.flags.d, quantity: multiplier});
                 printOutput(`${chalk.yellow(currency.symbol)}${value}`);
-            }).catch(e => {
+            } catch (e) {
                 console.log(e);
                 exitError('Please check your internet connection');
-            });
+            }
         } else {
-            btcValue({currencyCode: defaultCurrency.code, isDecimal: cli.flags.d, quantity: multiplier}).then(value => {
+            try {
+                const value = await btcValue({currencyCode: defaultCurrency.code, isDecimal: cli.flags.d, quantity: multiplier});
                 printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
-            }).catch(() => {
+            } catch (e) {
+                console.log(e);
                 exitError('Please check your internet connection');
-            });
+            }
         }
     }
 
@@ -282,19 +313,53 @@ if (cli.flags.l) {
     process.exit(0);
 }
 
-// If `r` falg is set => reset configuration file
-if (cli.flags.r) {
-    const newConfig = JSON.stringify(defaultConfiguration, null, 4);
-
-    fs.writeFile(configFile, newConfig, function(error) {
-        if (error) {
-            exitError('Something wrong happened, could not save new default currency.');
-        } else {
+(async () => {
+    // If `r` falg is set => reset configuration file
+    if (cli.flags.r) {
+        const newConfig = JSON.stringify(defaultConfiguration, null, 4);
+    
+        try {
+            await saveConfig(newConfig);
             console.log(chalk.green(`${logSymbols.success} Default configuration reset to: ${defaultConfiguration.default.name} (${defaultConfiguration.default.symbol})`));
+        } catch (error) {
+            exitError('Something wrong happened, could not reset default configuration.');
         }
 
         process.exit(0);
-    });
-}
+    }
 
-checkAllFlags();
+    // If `k` flag is set => set the API key
+    if (cli.flags.k) {
+        apiKey = cli.flags.k;
+        
+        const newConfig = JSON.stringify(
+            {
+                default: {
+                    name: defaultCurrency.name,
+                    code: defaultCurrency.code,
+                    symbol: defaultCurrency.symbol
+                },
+                quantity: quantity,
+                autorefresh: autorefresh,
+                apiKey: apiKey
+            }, null, 4);
+    
+        try {
+            await saveConfig(newConfig);
+            console.log(chalk.green(`${logSymbols.success} API key is set`));
+        } catch (error) {
+            exitError('Something wrong happened, could not save API key.');
+        }
+
+        process.exit(0);
+    }
+
+    // Ensure that the API key is set
+    if (!apiKey) {
+        exitError('You need to provide an API key to use the CLI. Go to https://coinmarketcap.com/api/ for obtaining a key.');
+    } else {
+        btcValue.setApiKey(apiKey);
+    }
+    
+    checkAllFlags();
+})();
