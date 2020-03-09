@@ -23,6 +23,7 @@ $ btc-value --help
         $ btc-value
         
         Options
+          --key -k                      Set the API key (Obtain key at: https://coinmarketcap.com/api/)
           --decimal -d                  Print value as decimal
           --save -s [code]              Set the currency that will be used by default
           --currency -c [code]          Print the value in another currency         
@@ -35,6 +36,8 @@ $ btc-value --help
         Examples
         $ btc-value
             $16258
+        $ btc-value -k <example-API-key>
+            √ API key is set
         $ btc-value -d
             $16258.2
         $ btc-value -s NOK
@@ -49,6 +52,9 @@ $ btc-value --help
 ```
 
 ## Options
+### `--key`, `-k`
+Set the API key. This key is required for using the commands that calls the API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/). 
+
 ### `--decimal`, `-d`
 Print the value as a decimal number.
 

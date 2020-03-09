@@ -53,6 +53,8 @@ const cli = meow(`
         Examples
         $ btc-value
             $16258
+        $ btc-value -k <example-API-key>
+            √ API key is set
         $ btc-value -d
             $16258.2
         $ btc-value -s NOK
