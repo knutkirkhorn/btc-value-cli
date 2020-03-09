@@ -19,7 +19,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "lint": "eslint ."
   },
   "keywords": [
     "bitcoin",
@@ -39,6 +40,10 @@
   },
   "devDependencies": {
     "ava": "^2.4.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-ava": "^10.2.0",
+    "eslint-plugin-import": "^2.20.1",
     "execa": "^2.1.0"
   }
 }

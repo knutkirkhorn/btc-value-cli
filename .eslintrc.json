@@ -1,0 +1,43 @@
+{
+    "env": {
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "airbnb-base",
+        "plugin:ava/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "linebreak-style": "off",
+        "object-curly-spacing": "off",
+        "eol-last": "off",
+        "comma-dangle": "off",
+        "arrow-parens": "off",
+        "no-plusplus": "off",
+        "strict": "off",
+        "import/newline-after-import": "off",
+        "no-param-reassign": "off",
+        "no-useless-return": "off",
+        "max-len": "off",
+        "lines-around-directive": "off",
+        "no-console": "off"
+    }
+}
