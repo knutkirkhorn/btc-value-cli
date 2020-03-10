@@ -88,13 +88,16 @@ If the percentage is negative it is printed in bright red otherwise it is printe
 
 ### `--reset`, `-r`
 Reset the configuration to the default:
-```
-default: {
-    code: "USD",
-    symbol: "$"
-},
-quantity: 1,
-autorefresh: 15
+```json
+{
+    default: {
+        code: "USD",
+        symbol: "$"
+    },
+    quantity: 1,
+    autorefresh: 15,
+    apiKey: ""
+}
 ```
 
 ## Related
