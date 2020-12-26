@@ -89,11 +89,11 @@ const cli = meow(`
             alias: 'l'
         },
         quantity: {
-            type: 'double',
+            type: 'number',
             alias: 'q'
         },
         autorefresh: {
-            type: 'integer',
+            type: 'number',
             alias: 'a'
         },
         percentage: {
