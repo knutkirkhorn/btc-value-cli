@@ -286,6 +286,7 @@ async function checkAllFlags() {
             autorefresh = cli.flags.a;
         }
 
+        // eslint-disable-next-line no-unused-vars
         autorefreshTimer = setTimeout(checkAllFlags, autorefresh * 1000);
         spinner.start();
     }
