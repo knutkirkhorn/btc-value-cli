@@ -1,6 +1,6 @@
 <h1 align="center">
 	<br>
-	<img width="360" src="https://rawgit.com/Knutakir/btc-value-cli/master/media/logo.svg" alt="btc-value-cli">
+	<img width="360" src="https://rawgit.com/Knutakir/btc-value-cli/main/media/logo.svg" alt="btc-value-cli">
 	<br>
 	<br>
 	<br>
@@ -8,7 +8,7 @@
 
 > Get the current Bitcoin value in command line
 
-[![Build Status](https://travis-ci.org/Knutakir/btc-value-cli.svg?branch=master)](https://travis-ci.org/Knutakir/btc-value-cli) [![Downloads](https://img.shields.io/npm/dm/btc-value-cli.svg)](https://www.npmjs.com/package/btc-value-cli)
+[![Build Status](https://travis-ci.org/Knutakir/btc-value-cli.svg?branch=main)](https://travis-ci.org/Knutakir/btc-value-cli) [![Downloads](https://img.shields.io/npm/dm/btc-value-cli.svg)](https://www.npmjs.com/package/btc-value-cli)
 
 ## Installation
 ```
@@ -62,7 +62,7 @@ Print the value as a decimal number.
 Set the currency that will be used by default. It will save the new default currency code and symbol in the [config.json](config.json) file. Next time ```btc-value``` is run in command line it will print the value of the new default currency.
 
 ### `--currency`, `-c [code]`
-Print the value in another currency. It will print out the value of the currency code. A list of all currency codes can be shown with the use of the `-l` flag or [here](https://github.com/Knutakir/btc-value/blob/master/currencies.json).
+Print the value in another currency. It will print out the value of the currency code. A list of all currency codes can be shown with the use of the `-l` flag or [here](https://github.com/Knutakir/btc-value/blob/main/currencies.json).
 
 ### `--list`, `-l`
 Print a list of all supported currencies.
