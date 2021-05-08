@@ -32,15 +32,15 @@
   "author": "Knut Kirkhorn",
   "license": "MIT",
   "dependencies": {
-    "btc-value": "^3.0.1",
-    "chalk": "^4.1.0",
+    "btc-value": "^3.1.0",
+    "chalk": "^4.1.1",
     "log-symbols": "^4.0.0",
     "meow": "^8.1.0",
-    "ora": "^5.1.0"
+    "ora": "^5.4.0"
   },
   "devDependencies": {
     "ava": "^3.14.0",
-    "eslint": "^7.16.0",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-ava": "^11.0.0",
     "eslint-plugin-import": "^2.22.1",

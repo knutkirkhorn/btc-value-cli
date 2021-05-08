@@ -1,5 +1,9 @@
 #!/usr/bin/env node
+
+// TODO: remove when upgrading to ESM
+// eslint-disable-next-line strict, lines-around-directive
 'use strict';
+
 const btcValue = require('btc-value');
 const meow = require('meow');
 const fs = require('fs');
@@ -7,6 +11,7 @@ const chalk = require('chalk');
 const Ora = require('ora');
 const logSymbols = require('log-symbols');
 const path = require('path');
+
 const spinner = new Ora();
 
 const defaultConfiguration = {
@@ -109,6 +114,7 @@ const cli = meow(`
 
 // Search if input currency code matches any in the currency list
 function isValidCurrencyCode(currencyCode) {
+    // eslint-disable-next-line no-param-reassign
     currencyCode = currencyCode.toUpperCase();
     let currency;
 
@@ -161,7 +167,6 @@ function saveConfig(newConfig) {
             }
 
             resolve();
-            return;
         });
     });
 }
