@@ -4,7 +4,7 @@
   "description": "Get the current Bitcoin value CLI",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Knutakir/btc-value-cli"
+    "url": "https://github.com/knutkirkhorn/btc-value-cli"
   },
   "bin": {
     "btc-value": "cli.js",
