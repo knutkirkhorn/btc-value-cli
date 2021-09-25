@@ -8,7 +8,7 @@
 
 > Get the current Bitcoin value in command line
 
-[![Build Status](https://travis-ci.org/knutkirkhorn/btc-value-cli.svg?branch=main)](https://travis-ci.org/knutkirkhorn/btc-value-cli) [![Downloads](https://img.shields.io/npm/dm/btc-value-cli.svg)](https://www.npmjs.com/package/btc-value-cli)
+[![Downloads](https://img.shields.io/npm/dm/btc-value-cli.svg)](https://www.npmjs.com/package/btc-value-cli)
 
 ## Installation
 ```
