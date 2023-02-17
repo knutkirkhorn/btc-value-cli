@@ -11,11 +11,13 @@
 [![Downloads](https://img.shields.io/npm/dm/btc-value-cli.svg)](https://www.npmjs.com/package/btc-value-cli)
 
 ## Installation
+
 ```
 $ npm install --global btc-value-cli 
 ```
 
 ## Usage
+
 ```
 $ btc-value --help
 
@@ -52,21 +54,28 @@ $ btc-value --help
 ```
 
 ## Options
+
 ### `--key`, `-k`
-Set the API key. This key is required for using the commands that calls the API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/). 
+
+Set the API key. This key is required for using the commands that calls the API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/).
 
 ### `--decimal`, `-d`
+
 Print the value as a decimal number.
 
 ### `--save`, `-s [code]`
+
 Set the currency that will be used by default. It will save the new default currency code and symbol in the [config.json](config.json) file. Next time ```btc-value``` is run in command line it will print the value of the new default currency.
 
 ### `--currency`, `-c [code]`
+
 Print the value in another currency. It will print out the value of the currency code. A list of all currency codes can be shown with the use of the `-l` flag or [here](https://github.com/knutkirkhorn/btc-value/blob/main/currencies.json).
 
 ### `--list`, `-l`
+
 Print a list of all supported currencies.
 The full list is:
+
 ```
 AUD, BRL, CAD, CHF, CLP, CNY, CZK, DKK,
 EUR, GBP, HKD, HUF, IDR, ILS, INR, JPY,
@@ -75,19 +84,24 @@ PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
 ```
 
 ### `--quantity`, `-q [number]`
+
 Print the value of the given quantity. Input quantity can be either ```decimal``` or ```integer```.
 If the input quantity is set to a number, the given quantity is saved locally in the [config.json](config.json) file.
 The `-q` flag can be used with and without a number input.
 
 ### `--autorefresh`, `-a [seconds]`
+
 Set a timeout that print the value every `seconds` seconds. The timeout restarts after every use. If `seconds` is not set, the default timeout is used (15 seconds). This is stored in the [config.json](config.json) file. The reason a timeout is used instead of a interval, is that it might not finish before the next starts (if bad network connection) and this can use more memory than needed.
 
 ### `--percentage`, `-p [h|d|w]`
+
 Print the percentage change the last hour, day and week. If the flag is set to `h` then percentage change last hour is printed. It is the same for `d` and days, and `w` and week.
 If the percentage is negative it is printed in bright red otherwise it is printed in green.
 
 ### `--reset`, `-r`
+
 Reset the configuration to the default:
+
 ```js
 {
     default: {
@@ -101,7 +115,5 @@ Reset the configuration to the default:
 ```
 
 ## Related
-- [btc-value](https://github.com/knutkirkhorn/btc-value) - API for this module
 
-## License
-MIT © [Knut Kirkhorn](LICENSE)
+- [btc-value](https://github.com/knutkirkhorn/btc-value) - API for this module
