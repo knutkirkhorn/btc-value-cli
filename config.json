@@ -1,9 +1,5 @@
 {
-    "default": {
-        "name": "United States Dollar",
-        "code": "USD",
-        "symbol": "$"
-    },
+    "default": "USD",
     "quantity": 1,
     "autorefresh": 15,
     "apiKey": "",

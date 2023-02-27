@@ -11,15 +11,12 @@ const chalk = require('chalk');
 const Ora = require('ora');
 const logSymbols = require('log-symbols');
 const path = require('path');
+const getSymbolFromCurrency = require('currency-symbol-map');
 
 const spinner = new Ora();
 
 const defaultConfiguration = {
-    default: {
-        name: 'United States Dollar',
-        code: 'USD',
-        symbol: '$'
-    },
+    default: 'USD',
     quantity: 1,
     autorefresh: 15,
     apiKey: '',
@@ -120,14 +117,15 @@ const cli = meow(`
 });
 
 // Search if input currency code matches any in the currency list
-function isValidCurrencyCode(currencyCode) {
+async function isValidCurrencyCode(currencyCode) {
     // eslint-disable-next-line no-param-reassign
-    currencyCode = currencyCode.toUpperCase();
+    currencyCode = currencyCode.toLowerCase();
     let currency;
+    const supportedCurrencies = await btcValue.getSupportedCurrencies();
 
-    for (let i = 0; i < btcValue.currencies.length; i++) {
-        if (currencyCode === btcValue.currencies[i].code) {
-            currency = btcValue.currencies[i];
+    for (let i = 0; i < supportedCurrencies.length; i++) {
+        if (currencyCode === supportedCurrencies[i].toLowerCase()) {
+            currency = supportedCurrencies[i];
             break;
         }
     }
@@ -181,23 +179,20 @@ function saveConfig(newConfig) {
 // For calling all functions every time in a timeout with `a` flag
 async function checkAllFlags() {
     // If `s` flag is set => set currency as default
-    if (cli.flags.s !== undefined) {
-        defaultCurrency = isValidCurrencyCode(cli.flags.s);
+    if (cli.flags.save !== undefined) {
+        defaultCurrency = await isValidCurrencyCode(cli.flags.save);
 
         const newConfig = JSON.stringify({
-            default: {
-                name: defaultCurrency.name,
-                code: defaultCurrency.code,
-                symbol: defaultCurrency.symbol
-            },
+            default: defaultCurrency,
             quantity,
             autorefresh,
             apiKey
         }, null, 4);
+        const defaultCurrencySymbol = getSymbolFromCurrency(defaultCurrency);
 
         try {
             await saveConfig(newConfig);
-            console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency.name} (${defaultCurrency.symbol})`));
+            console.log(chalk.green(`${logSymbols.success} Default currency set to: ${defaultCurrency} (${defaultCurrencySymbol})`));
         } catch (error) {
             exitError('Something wrong happened, could not save new default currency.');
         }
@@ -206,18 +201,14 @@ async function checkAllFlags() {
     let multiplier = 1;
     const printAsDecimal = cli.flags.decimal;
 
-    if (cli.flags.q) {
-        if (typeof cli.flags.q === 'number') {
+    if (cli.flags.quantity) {
+        if (typeof cli.flags.quantity === 'number') {
             // Check if quantity is not the same as the old one
-            if (quantity !== cli.flags.q) {
+            if (quantity !== cli.flags.quantity) {
                 // Save the new value of `quantity`
-                quantity = cli.flags.q;
+                quantity = cli.flags.quantity;
                 const newConfig = JSON.stringify({
-                    default: {
-                        name: defaultCurrency.name,
-                        code: defaultCurrency.code,
-                        symbol: defaultCurrency.symbol
-                    },
+                    default: defaultCurrency,
                     quantity,
                     autorefresh,
                     apiKey
@@ -241,8 +232,8 @@ async function checkAllFlags() {
     }
 
     // If `p` flag is set => print percentage change
-    if (cli.flags.p !== undefined) {
-        if (cli.flags.p === 'h') {
+    if (cli.flags.percentage !== undefined) {
+        if (cli.flags.percentage === 'h') {
             try {
                 const percentage = await btcValue.getPercentageChangeLastHour();
                 printPercentage(`${percentage}%`);
@@ -250,7 +241,7 @@ async function checkAllFlags() {
                 console.log(e);
                 exitError('Please check your internet connection');
             }
-        } else if (cli.flags.p === 'd' || cli.flags.p === '') {
+        } else if (cli.flags.percentage === 'd' || cli.flags.percentage === '') {
             try {
                 const percentage = await btcValue.getPercentageChangeLastDay();
                 printPercentage(`${percentage}%`);
@@ -258,7 +249,7 @@ async function checkAllFlags() {
                 console.log(e);
                 exitError('Please check your internet connection');
             }
-        } else if (cli.flags.p === 'w') {
+        } else if (cli.flags.percentage === 'w') {
             try {
                 const percentage = await btcValue.getPercentageChangeLastWeek();
                 printPercentage(`${percentage}%`);
@@ -269,24 +260,26 @@ async function checkAllFlags() {
         } else {
             exitError('Invalid percentage input. Check `btc-value --help`.');
         }
-    } else if (cli.flags.c) {
+    } else if (cli.flags.currency) {
         // If `d` flag is set => return value as decimal
         // USD is the default currency in the API
         // If `c` flag is set => convert to other currency
         // Print value of given `quantity` or just 1 BTC
-        const currency = isValidCurrencyCode(cli.flags.c);
+        const currency = await isValidCurrencyCode(cli.flags.currency);
 
         try {
-            const value = await btcValue({currencyCode: cli.flags.c, isDecimal: printAsDecimal, quantity: multiplier});
-            printOutput(`${chalk.yellow(currency.symbol)}${value}`);
+            const value = await btcValue({currencyCode: cli.flags.currency, isDecimal: printAsDecimal, quantity: multiplier});
+            const currencySymbol = getSymbolFromCurrency(currency);
+            printOutput(`${chalk.yellow(currencySymbol)}${value}`);
         } catch (e) {
             console.log(e);
             exitError('Please check your internet connection');
         }
     } else {
         try {
-            const value = await btcValue({currencyCode: defaultCurrency.code, isDecimal: printAsDecimal, quantity: multiplier});
-            printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
+            const value = await btcValue({currencyCode: defaultCurrency, isDecimal: printAsDecimal, quantity: multiplier});
+            const defaultCurrencySymbol = getSymbolFromCurrency(defaultCurrency);
+            printOutput(`${chalk.yellow(defaultCurrencySymbol)}${value}`);
         } catch (e) {
             console.log(e);
             exitError('Please check your internet connection');
@@ -294,9 +287,9 @@ async function checkAllFlags() {
     }
 
     // If `a` flag is set => set interval for automatic refreshing value printing
-    if (cli.flags.a !== undefined) {
-        if (cli.flags.a !== true) {
-            autorefresh = cli.flags.a;
+    if (cli.flags.autorefresh !== undefined) {
+        if (cli.flags.autorefresh !== true) {
+            autorefresh = cli.flags.autorefresh;
         }
 
         // eslint-disable-next-line no-unused-vars
@@ -305,40 +298,38 @@ async function checkAllFlags() {
     }
 }
 
-// If `l` flag is set => print list of supported currency codes
-if (cli.flags.l) {
-    let currencyOutprint = '  List of all supported currency codes:';
-
-    for (let i = 0; i < btcValue.currencies.length; i++) {
-        // To separate the currency codes on different lines
-        if (i % 9 === 0) {
-            currencyOutprint += '\n      ';
-        }
-
-        currencyOutprint += btcValue.currencies[i].code;
-        if (i !== btcValue.currencies.length - 1) {
-            currencyOutprint += ', ';
-        }
-    }
-
-    console.log(currencyOutprint);
-    process.exit(0);
-}
-
 const supportedProviders = ['cmc', 'coingecko'];
 
 (async () => {
+    // If `l` flag is set => print list of supported currency codes
+    if (cli.flags.list) {
+        let currencyOutprint = '  List of all supported currency codes:';
+        const supportedCurrencies = await btcValue.getSupportedCurrencies();
+
+        for (let i = 0; i < supportedCurrencies.length; i++) {
+            // To separate the currency codes on different lines
+            if (i % 9 === 0) {
+                currencyOutprint += '\n      ';
+            }
+
+            currencyOutprint += supportedCurrencies[i];
+
+            if (i !== supportedCurrencies.length - 1) {
+                currencyOutprint += ', ';
+            }
+        }
+
+        console.log(currencyOutprint);
+        process.exit(0);
+    }
+
     if (cli.flags.provider) {
         if (!supportedProviders.includes(cli.flags.provider)) {
             exitError('Please select a valid currency provider');
         }
 
         const newConfig = JSON.stringify({
-            default: {
-                name: defaultCurrency.name,
-                code: defaultCurrency.code,
-                symbol: defaultCurrency.symbol
-            },
+            default: defaultCurrency,
             quantity,
             autorefresh,
             apiKey,
@@ -374,11 +365,7 @@ const supportedProviders = ['cmc', 'coingecko'];
         apiKey = cli.flags.k;
 
         const newConfig = JSON.stringify({
-            default: {
-                name: defaultCurrency.name,
-                code: defaultCurrency.code,
-                symbol: defaultCurrency.symbol
-            },
+            default: defaultCurrency,
             quantity,
             autorefresh,
             apiKey

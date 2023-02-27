@@ -33,6 +33,7 @@
   "dependencies": {
     "btc-value": "^4.0.0",
     "chalk": "^4.1.1",
+    "currency-symbol-map": "^5.1.0",
     "log-symbols": "^4.0.0",
     "meow": "^8.1.0",
     "ora": "^5.4.0"
