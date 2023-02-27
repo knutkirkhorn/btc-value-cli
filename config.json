@@ -6,5 +6,6 @@
     },
     "quantity": 1,
     "autorefresh": 15,
-    "apiKey": ""
+    "apiKey": "",
+    "provider": "coingecko"
 }

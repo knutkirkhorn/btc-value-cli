@@ -55,6 +55,7 @@ const cli = meow(`
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
           --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
           --reset -r                    Reset the configuration to the default
+          --provider [cmc|coingecko]    Set the currency provider to retrieve Bitcoin values from
 
         Examples
         $ btc-value
@@ -72,6 +73,8 @@ const cli = meow(`
             $17273
         $ btc-value -p h
             -0.08%
+        $ btc-value --provider coingecko
+            √ Set coingecko as currency provider
 `, {
     flags: {
         key: {
@@ -109,6 +112,9 @@ const cli = meow(`
         reset: {
             type: 'boolean',
             alias: 'r'
+        },
+        provider: {
+            type: 'string'
         }
     }
 });
@@ -319,7 +325,36 @@ if (cli.flags.l) {
     process.exit(0);
 }
 
+const supportedProviders = ['cmc', 'coingecko'];
+
 (async () => {
+    if (cli.flags.provider) {
+        if (!supportedProviders.includes(cli.flags.provider)) {
+            exitError('Please select a valid currency provider');
+        }
+
+        const newConfig = JSON.stringify({
+            default: {
+                name: defaultCurrency.name,
+                code: defaultCurrency.code,
+                symbol: defaultCurrency.symbol
+            },
+            quantity,
+            autorefresh,
+            apiKey,
+            provider: cli.flags.provider
+        }, null, 4);
+
+        try {
+            await saveConfig(newConfig);
+            console.log(chalk.green(`${logSymbols.success} Set \`${cli.flags.provider}\` as currency provider`));
+        } catch (error) {
+            exitError('Something wrong happened, could not save new currency provider');
+        }
+
+        process.exit(0);
+    }
+
     // If `r` flag is set => reset configuration file
     if (cli.flags.r) {
         const newConfig = JSON.stringify(defaultConfiguration, null, 4);
@@ -362,7 +397,7 @@ if (cli.flags.l) {
     if (config.provider === 'cmc') {
         // Ensure that the API key is set if using data from CoinMarketCap
         if (!apiKey) {
-            exitError('You need to provide an API key to use the CLI. Go to https://coinmarketcap.com/api/ for obtaining a key.');
+            exitError('You need to provide an API key to use CMC as a provider for the CLI. Set CoinGecko as a provider using `btc-value --provider coingecko`.\nOr go to https://coinmarketcap.com/api/ for obtaining a key.');
         } else {
             btcValue.setApiKey(apiKey);
         }
