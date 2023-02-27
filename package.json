@@ -1,6 +1,6 @@
 {
   "name": "btc-value-cli",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Get the current Bitcoin value CLI",
   "repository": {
     "type": "git",
