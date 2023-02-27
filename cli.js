@@ -135,7 +135,7 @@ function isValidCurrencyCode(currencyCode) {
     return currency;
 }
 
-// Helper functon for printing and stopping the spinner
+// Helper function for printing and stopping the spinner
 function printOutput(input) {
     spinner.stop();
     console.log(input);
@@ -171,7 +171,7 @@ function saveConfig(newConfig) {
     });
 }
 
-// For calling all funtions every time in a timeout with `a` flag
+// For calling all functions every time in a timeout with `a` flag
 async function checkAllFlags() {
     // If `s` flag is set => set currency as default
     if (cli.flags.s !== undefined) {
@@ -302,7 +302,7 @@ if (cli.flags.l) {
     let currencyOutprint = '  List of all supported currency codes:';
 
     for (let i = 0; i < btcValue.currencies.length; i++) {
-        // To seperate the currency codes on different lines
+        // To separate the currency codes on different lines
         if (i % 9 === 0) {
             currencyOutprint += '\n      ';
         }
@@ -318,7 +318,7 @@ if (cli.flags.l) {
 }
 
 (async () => {
-    // If `r` falg is set => reset configuration file
+    // If `r` flag is set => reset configuration file
     if (cli.flags.r) {
         const newConfig = JSON.stringify(defaultConfiguration, null, 4);
 
