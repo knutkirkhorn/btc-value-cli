@@ -22,7 +22,8 @@ const defaultConfiguration = {
     },
     quantity: 1,
     autorefresh: 15,
-    apiKey: ''
+    apiKey: '',
+    provider: 'coingecko'
 };
 const configFile = path.join(__dirname, './config.json');
 let config;
@@ -197,6 +198,7 @@ async function checkAllFlags() {
     }
 
     let multiplier = 1;
+    const printAsDecimal = cli.flags.decimal;
 
     if (cli.flags.q) {
         if (typeof cli.flags.q === 'number') {
@@ -269,7 +271,7 @@ async function checkAllFlags() {
         const currency = isValidCurrencyCode(cli.flags.c);
 
         try {
-            const value = await btcValue({currencyCode: cli.flags.c, isDecimal: cli.flags.d, quantity: multiplier});
+            const value = await btcValue({currencyCode: cli.flags.c, isDecimal: printAsDecimal, quantity: multiplier});
             printOutput(`${chalk.yellow(currency.symbol)}${value}`);
         } catch (e) {
             console.log(e);
@@ -277,7 +279,7 @@ async function checkAllFlags() {
         }
     } else {
         try {
-            const value = await btcValue({currencyCode: defaultCurrency.code, isDecimal: cli.flags.d, quantity: multiplier});
+            const value = await btcValue({currencyCode: defaultCurrency.code, isDecimal: printAsDecimal, quantity: multiplier});
             printOutput(`${chalk.yellow(defaultCurrency.symbol)}${value}`);
         } catch (e) {
             console.log(e);
@@ -357,11 +359,13 @@ if (cli.flags.l) {
         process.exit(0);
     }
 
-    // Ensure that the API key is set
-    if (!apiKey) {
-        exitError('You need to provide an API key to use the CLI. Go to https://coinmarketcap.com/api/ for obtaining a key.');
-    } else {
-        btcValue.setApiKey(apiKey);
+    if (config.provider === 'cmc') {
+        // Ensure that the API key is set if using data from CoinMarketCap
+        if (!apiKey) {
+            exitError('You need to provide an API key to use the CLI. Go to https://coinmarketcap.com/api/ for obtaining a key.');
+        } else {
+            btcValue.setApiKey(apiKey);
+        }
     }
 
     checkAllFlags();
