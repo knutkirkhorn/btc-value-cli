@@ -57,7 +57,7 @@ $ btc-value --help
 
 ### `--key`, `-k`
 
-Set the API key. This key is required for using the commands that calls the API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/).
+Set the API key. This key is optional and only required if using data from the CoinMarketCap API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/).
 
 ### `--decimal`, `-d`
 
