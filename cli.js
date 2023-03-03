@@ -186,7 +186,8 @@ async function checkAllFlags() {
             default: defaultCurrency,
             quantity,
             autorefresh,
-            apiKey
+            apiKey,
+            provider: config.provider
         }, null, 4);
         const defaultCurrencySymbol = getSymbolFromCurrency(defaultCurrency);
 
@@ -211,7 +212,8 @@ async function checkAllFlags() {
                     default: defaultCurrency,
                     quantity,
                     autorefresh,
-                    apiKey
+                    apiKey,
+                    provider: config.provider
                 }, null, 4);
 
                 try {
@@ -347,12 +349,13 @@ const supportedProviders = ['cmc', 'coingecko'];
     }
 
     // If `r` flag is set => reset configuration file
-    if (cli.flags.r) {
+    if (cli.flags.reset) {
         const newConfig = JSON.stringify(defaultConfiguration, null, 4);
 
         try {
             await saveConfig(newConfig);
-            console.log(chalk.green(`${logSymbols.success} Default configuration reset to: ${defaultConfiguration.default.name} (${defaultConfiguration.default.symbol})`));
+            const defaultCurrencySymbol = getSymbolFromCurrency(defaultCurrency);
+            console.log(chalk.green(`${logSymbols.success} Default configuration reset to: ${defaultConfiguration.default} (${defaultCurrencySymbol})`));
         } catch (error) {
             exitError('Something wrong happened, could not reset default configuration.');
         }
@@ -361,14 +364,15 @@ const supportedProviders = ['cmc', 'coingecko'];
     }
 
     // If `k` flag is set => set the API key
-    if (cli.flags.k) {
-        apiKey = cli.flags.k;
+    if (cli.flags.key) {
+        apiKey = cli.flags.key;
 
         const newConfig = JSON.stringify({
             default: defaultCurrency,
             quantity,
             autorefresh,
-            apiKey
+            apiKey,
+            provider: config.provider
         }, null, 4);
 
         try {
