@@ -69,19 +69,11 @@ Set the currency that will be used by default. It will save the new default curr
 
 ### `--currency`, `-c [code]`
 
-Print the value in another currency. It will print out the value of the currency code. A list of all currency codes can be shown with the use of the `-l` flag or [here](https://github.com/knutkirkhorn/btc-value/blob/main/currencies.json).
+Print the value in another currency. It will print out the value of the currency code. A list of all currency codes can be shown with the use of the `-l` flag.
 
 ### `--list`, `-l`
 
-Print a list of all supported currencies.
-The full list is:
-
-```
-AUD, BRL, CAD, CHF, CLP, CNY, CZK, DKK,
-EUR, GBP, HKD, HUF, IDR, ILS, INR, JPY,
-KRW, MXN, MYR, NOK, NZD, USD, PHP, PKR,
-PLN, RUB, SEK, SGD, THB, TRY, TWD, ZAR
-```
+Print a list of all supported currencies for the selected currency provider.
 
 ### `--quantity`, `-q [number]`
 
@@ -104,13 +96,11 @@ Reset the configuration to the default:
 
 ```js
 {
-    default: {
-        code: 'USD',
-        symbol: '$'
-    },
+    default: 'USD',
     quantity: 1,
     autorefresh: 15,
-    apiKey: ''
+    apiKey: '',
+    provider: 'coingecko'
 }
 ```
 
