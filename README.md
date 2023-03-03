@@ -34,6 +34,7 @@ $ btc-value --help
           --autorefresh -a [seconds]    Automatic refresh printing every x seconds
           --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
           --reset -r                    Reset the configuration to the default
+          --provider [cmc|coingecko]    Set the currency provider to retrieve Bitcoin values from
 
         Examples
         $ btc-value
@@ -51,13 +52,11 @@ $ btc-value --help
             $17273
         $ btc-value -p h
             -0.08%
+        $ btc-value --provider coingecko
+            √ Set coingecko as currency provider
 ```
 
 ## Options
-
-### `--key`, `-k`
-
-Set the API key. This key is optional and only required if using data from the CoinMarketCap API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/).
 
 ### `--decimal`, `-d`
 
@@ -103,6 +102,14 @@ Reset the configuration to the default:
     provider: 'coingecko'
 }
 ```
+
+### `--provider [cmc|coingecko]`
+
+Set the currency provider to retrieve Bitcoin values from. By default it uses the data from CoinGecko.
+
+### `--key`, `-k`
+
+Set the API key. This key is optional and only required if using data from the CoinMarketCap API. To obtain an API key go to the [Cryptocurrency Market Capitalizations API](https://coinmarketcap.com/api/).
 
 ## Related
 
