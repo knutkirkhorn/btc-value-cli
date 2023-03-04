@@ -1,29 +1,31 @@
 {
-    "env": {
-        "commonjs": true,
-        "es6": true,
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "airbnb-base",
-        "plugin:ava/recommended"
-    ],
-    "parserOptions": {
-        "ecmaVersion": 2021,
-        "sourceType": "module"
-    },
-    "rules": {
-        "indent": ["error", 4],
-        "linebreak-style": "off",
-        "quotes": ["error", "single"],
-        "semi": ["error", "always"],
-        "arrow-parens": ["error", "as-needed"],
-        "object-curly-spacing": ["error", "never"],
-        "comma-dangle": ["error", "never"],
-        "import/extensions": ["error", "always"],
-        "no-console": "off",
-        "max-len": "off",
-        "no-plusplus": "off"
-    }
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"airbnb-base",
+		"plugin:ava/recommended",
+		"plugin:import/recommended",
+		"plugin:unicorn/recommended"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2023,
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": ["error", "tab", {"SwitchCase": 1}],
+		"no-tabs": "off",
+		"linebreak-style": "off",
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"arrow-parens": ["error", "as-needed"],
+		"object-curly-spacing": ["error", "never"],
+		"comma-dangle": ["error", "never"],
+		"import/extensions": ["error", "always"],
+		"no-console": "off",
+		"max-len": "off",
+		"no-plusplus": "off"
+	}
 }

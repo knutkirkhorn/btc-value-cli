@@ -1,49 +1,50 @@
 {
-  "name": "btc-value-cli",
-  "version": "3.1.1",
-  "description": "Get the current Bitcoin value CLI",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/knutkirkhorn/btc-value-cli"
-  },
-  "bin": {
-    "btc-value": "cli.js"
-  },
-  "files": [
-    "cli.js",
-    "config.json"
-  ],
-  "engines": {
-    "node": ">=4"
-  },
-  "main": "index.js",
-  "scripts": {
-    "test": "ava",
-    "lint": "eslint ."
-  },
-  "keywords": [
-    "bitcoin",
-    "btc",
-    "value",
-    "cryptocurrency",
-    "cli"
-  ],
-  "author": "Knut Kirkhorn",
-  "license": "MIT",
-  "dependencies": {
-    "btc-value": "^4.0.0",
-    "chalk": "^4.1.1",
-    "currency-symbol-map": "^5.1.0",
-    "log-symbols": "^4.0.0",
-    "meow": "^8.1.0",
-    "ora": "^5.4.0"
-  },
-  "devDependencies": {
-    "ava": "^3.14.0",
-    "eslint": "^7.26.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-ava": "^11.0.0",
-    "eslint-plugin-import": "^2.22.1",
-    "execa": "^5.0.0"
-  }
+	"name": "btc-value-cli",
+	"version": "3.1.1",
+	"description": "Get the current Bitcoin value CLI",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/knutkirkhorn/btc-value-cli"
+	},
+	"bin": {
+		"btc-value": "cli.js"
+	},
+	"files": [
+		"cli.js",
+		"config.json"
+	],
+	"scripts": {
+		"test": "ava",
+		"lint": "eslint ."
+	},
+	"keywords": [
+		"bitcoin",
+		"btc",
+		"value",
+		"cryptocurrency",
+		"cli"
+	],
+	"author": "Knut Kirkhorn",
+	"type": "module",
+	"engines": {
+		"node": ">=14.16"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"btc-value": "^5.0.1",
+		"chalk": "^5.2.0",
+		"currency-symbol-map": "^5.1.0",
+		"log-symbols": "^5.1.0",
+		"meow": "^11.0.0",
+		"ora": "^6.1.2"
+	},
+	"devDependencies": {
+		"ava": "^5.2.0",
+		"eslint": "^8.35.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-plugin-ava": "^14.0.0",
+		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-unicorn": "^46.0.0",
+		"execa": "^7.0.0"
+	}
 }

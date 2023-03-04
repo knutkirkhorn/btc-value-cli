@@ -13,7 +13,7 @@
 ## Installation
 
 ```
-$ npm install --global btc-value-cli 
+npm install --global btc-value-cli
 ```
 
 ## Usage
@@ -21,39 +21,30 @@ $ npm install --global btc-value-cli
 ```
 $ btc-value --help
 
-        Usage
-        $ btc-value
-        
-        Options
-          --key -k                      Set the API key (Obtain key at: https://coinmarketcap.com/api/)
-          --decimal -d                  Print value as decimal
-          --save -s [code]              Set the currency that will be used by default
-          --currency -c [code]          Print the value in another currency         
-          --list -l                     Print a list of all supported currencies
-          --quantity -q [number]        Print the value of the given quantity
-          --autorefresh -a [seconds]    Automatic refresh printing every x seconds
-          --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
-          --reset -r                    Reset the configuration to the default
-          --provider [cmc|coingecko]    Set the currency provider to retrieve Bitcoin values from
+  Usage
+    $ btc-value
 
-        Examples
-        $ btc-value
-            $16258
-        $ btc-value -k <example-API-key>
-            √ API key is set
-        $ btc-value -d
-            $16258.2
-        $ btc-value -s NOK
-            Default currency set as: NOK (kr)
-            kr158053
-        $ btc-value -c NOK
-            kr129640
-        $ btc-value -q 2.2
-            $17273
-        $ btc-value -p h
-            -0.08%
-        $ btc-value --provider coingecko
-            √ Set coingecko as currency provider
+  Options
+    --key -k                      Set the API key (Obtain key at: https://coinmarketcap.com/api/)
+    --decimal -d                  Print value as decimal
+    --save -s [code]              Set the currency that will be used by default
+    --currency -c [code]          Print the value in another currency
+    --list -l                     Print a list of all supported currencies
+    --quantity -q [number]        Print the value of the given quantity
+    --autorefresh -a [seconds]    Automatic refresh printing every x seconds
+    --percentage -p [h|d|w]       Print the percentage change (h = hour, d = day, w = week)
+    --reset -r                    Reset the configuration to the default
+    --provider [cmc|coingecko]    Set the currency provider to retrieve Bitcoin values from
+
+  Examples
+    $ btc-value
+    $ btc-value -k <example-API-key>
+    $ btc-value -d
+    $ btc-value -s NOK
+    $ btc-value -c NOK
+    $ btc-value -q 2.2
+    $ btc-value -p h
+    $ btc-value --provider coingecko
 ```
 
 ## Options
