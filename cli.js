@@ -176,6 +176,29 @@ function saveConfig(newConfig) {
 	});
 }
 
+function convertToTwoDecimals(number) {
+	// Check if the number is not an integer. If it is not, convert it to two decimals.
+	if (number % 1 === 0) return number;
+
+	return Number.parseFloat(number.toFixed(2));
+}
+
+function parseOptions(currencyValue, options) {
+	let parsedValue = currencyValue;
+
+	// Set the new currency value if quantity is provided
+	if (options.quantity) {
+		parsedValue *= options.quantity;
+	}
+
+	// If `isDecimal` is false => return an integer
+	if (!options.isDecimal) {
+		parsedValue = Number.parseInt(parsedValue, 10);
+	}
+
+	return convertToTwoDecimals(parsedValue);
+}
+
 // For calling all functions every time in a timeout with `a` flag
 async function checkAllFlags() {
 	// If `s` flag is set => set currency as default
@@ -282,18 +305,20 @@ async function checkAllFlags() {
 		const currency = await isValidCurrencyCode(cli.flags.currency);
 
 		try {
-			const value = await btcValue({currencyCode: cli.flags.currency, isDecimal: printAsDecimal, quantity: multiplier});
+			const value = await btcValue(cli.flags.currency);
+			const parsedValue = parseOptions(value, {isDecimal: printAsDecimal, quantity: multiplier});
 			const currencySymbol = getSymbolFromCurrency(currency);
-			printOutput(`${chalk.yellow(currencySymbol)}${value}`);
+			printOutput(`${chalk.yellow(currencySymbol)}${parsedValue}`);
 		} catch (error) {
 			console.log(error);
 			exitError('Please check your internet connection');
 		}
 	} else {
 		try {
-			const value = await btcValue({currencyCode: defaultCurrency, isDecimal: printAsDecimal, quantity: multiplier});
+			const value = await btcValue(defaultCurrency);
+			const parsedValue = parseOptions(value, {isDecimal: printAsDecimal, quantity: multiplier});
 			const defaultCurrencySymbol = getSymbolFromCurrency(defaultCurrency);
-			printOutput(`${chalk.yellow(defaultCurrencySymbol)}${value}`);
+			printOutput(`${chalk.yellow(defaultCurrencySymbol)}${parsedValue}`);
 		} catch (error) {
 			console.log(error);
 			exitError('Please check your internet connection');
